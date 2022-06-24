@@ -10,6 +10,21 @@ namespace BrowserChat.Backend.Core.Data
             
         }
 
+        protected override void OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder builder)
+        {
+            builder.Entity<Room>()
+                .HasMany(r => r.Posts)
+                .WithOne(p => p.Room)
+                .HasForeignKey(p => p.RoomId);
+
+            builder.Entity<Post>()
+                .HasOne(p => p.Room)
+                .WithMany(r => r.Posts)
+                .HasForeignKey(p => p.RoomId);
+        }
+
         public DbSet<Room> Rooms { get; set; }
+
+        public DbSet<Post> Posts { get; set; }
     }
 }

@@ -15,5 +15,10 @@ namespace BrowserChat.Backend.Core.Data
         {
             return _context.Rooms.ToList();
         }
+
+        public IEnumerable<Post> GetRecentPosts(int roomId, int limit)
+        {
+            return _context.Posts.Where(p => p.RoomId == roomId).OrderByDescending(p => p.TimeStamp).Take(limit).ToList();
+        }
     }
 }

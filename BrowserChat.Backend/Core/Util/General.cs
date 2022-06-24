@@ -10,9 +10,9 @@ namespace BrowserChat.Backend.Core.Util
             return Encrypt(str);
         }
 
-        public static string DesencryptString(string str)
+        public static string DecryptString(string str)
         {
-            return Desencrypt(str);
+            return Decrypt(str);
         }
 
         public static string EncryptStringEncoded(string str)
@@ -20,9 +20,9 @@ namespace BrowserChat.Backend.Core.Util
             return System.Web.HttpUtility.UrlEncode(Encrypt(str));
         }
 
-        public static string DesencryptStringEncoded(string str)
+        public static string DecryptStringEncoded(string str)
         {
-            return Desencrypt(System.Web.HttpUtility.UrlDecode(str));
+            return Decrypt(System.Web.HttpUtility.UrlDecode(str));
             
         }
 
@@ -31,7 +31,7 @@ namespace BrowserChat.Backend.Core.Util
             return BrowserChat.Util.StringCipher.Encrypt(ConfigurationHelper.config.GetValue<string>("EncryptionKey"), str);
         }
 
-        private static string Desencrypt(string str)
+        private static string Decrypt(string str)
         {
             return BrowserChat.Util.StringCipher.Decrypt(ConfigurationHelper.config.GetValue<string>("EncryptionKey"), str);
         }

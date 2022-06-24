@@ -39,6 +39,18 @@ namespace BrowserChat.Backend.Core.Data
 
                 context.SaveChanges();
             }
+
+            if (!context.Posts.Any())
+            {
+                Random rnd = new Random();
+
+                for (int i = 1; i <= 100; i++)
+                {
+                    context.Posts.Add(new Post { Message = $"Message #{i}", RoomId = rnd.Next(1, 5), TimeStamp = DateTime.Now, UserName = "nestor.panu" });
+                }
+
+                context.SaveChanges();
+            }
         }
     }
 }
