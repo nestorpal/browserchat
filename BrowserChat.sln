@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Backend", "BrowserChat.Backend\BrowserChat.Backend.csproj", "{188BE829-AF0E-4399-B8DC-D8E08D6DEBFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrowserChat.Backend", "BrowserChat.Backend\BrowserChat.Backend.csproj", "{188BE829-AF0E-4399-B8DC-D8E08D6DEBFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Entity", "BrowserChat.Entity\BrowserChat.Entity.csproj", "{7D35889A-A523-4538-B0ED-43971DCE8893}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrowserChat.Entity", "BrowserChat.Entity\BrowserChat.Entity.csproj", "{7D35889A-A523-4538-B0ED-43971DCE8893}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Util", "BrowserChat.Util\BrowserChat.Util.csproj", "{B21CD03D-ABA0-4A98-AF8B-8D1ED3849680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrowserChat.Util", "BrowserChat.Util\BrowserChat.Util.csproj", "{B21CD03D-ABA0-4A98-AF8B-8D1ED3849680}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Bot", "BrowserChat.Bot\BrowserChat.Bot.csproj", "{8D804404-C803-451F-A75D-75D69D80BA2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrowserChat.Bot", "BrowserChat.Bot\BrowserChat.Bot.csproj", "{8D804404-C803-451F-A75D-75D69D80BA2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Value", "BrowserChat.Value\BrowserChat.Value.csproj", "{A00B39ED-DD61-498D-BF7D-DCBBA01AC0E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrowserChat.Value", "BrowserChat.Value\BrowserChat.Value.csproj", "{A00B39ED-DD61-498D-BF7D-DCBBA01AC0E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
