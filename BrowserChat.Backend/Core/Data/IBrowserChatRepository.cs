@@ -6,5 +6,7 @@ namespace BrowserChat.Backend.Core.Data
     {
         IEnumerable<Room> GetAllRooms();
         IEnumerable<Post> GetRecentPosts(int roomId, int limit);
+        void RegisterPost(Post post);
+        bool SaveChanges();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BrowserChat.Backend.Core.Data;
+using BrowserChat.Backend.Core.HubConfig;
 using BrowserChat.Backend.Core.Util;
 using BrowserChat.Entity;
 using BrowserChat.Entity.DTO;
@@ -13,11 +14,13 @@ namespace BrowserChat.Backend.Controllers
     {
         private readonly IBrowserChatRepository _repo;
         private readonly IMapper _mapper;
+        private readonly HubHelper _hubHelper;
 
-        public PostsController(IBrowserChatRepository repo, IMapper mapper)
+        public PostsController(IBrowserChatRepository repo, IMapper mapper, HubHelper hubHelper)
         {
             _repo = repo;
             _mapper = mapper;
+            _hubHelper = hubHelper;
         }
 
         [HttpGet]
@@ -30,6 +33,27 @@ namespace BrowserChat.Backend.Controllers
             }
 
             throw new ArgumentException();
+        }
+
+        [HttpPost]
+        public async Task PublishPost(PostPublishDTO postPublish)
+        {
+            if (postPublish != null)
+            {
+                string userName = "nestor.panu"; // temporarily hardcoded. Afterwards the value will come from HttpContext
+
+                var post = _mapper.Map<Post>(postPublish);
+                post.UserName = userName;
+
+                _repo.RegisterPost(post);
+                if (_repo.SaveChanges())
+                {
+                    await _hubHelper.PublishPost(userName, postPublish);
+                    return;
+                }
+            }
+
+            throw new ArgumentNullException();
         }
     }
 }

@@ -20,5 +20,15 @@ namespace BrowserChat.Backend.Core.Data
         {
             return _context.Posts.Where(p => p.RoomId == roomId).OrderByDescending(p => p.TimeStamp).Take(limit).ToList();
         }
+
+        public void RegisterPost(Post post)
+        {
+            _context.Posts.Add(post);
+        }
+
+        public bool SaveChanges()
+        {
+            return (_context.SaveChanges() >= 0);
+        }
     }
 }
