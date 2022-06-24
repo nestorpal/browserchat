@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Entity", "Brows
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Util", "BrowserChat.Util\BrowserChat.Util.csproj", "{B21CD03D-ABA0-4A98-AF8B-8D1ED3849680}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Bot", "BrowserChat.Bot\BrowserChat.Bot.csproj", "{8D804404-C803-451F-A75D-75D69D80BA2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Value", "BrowserChat.Value\BrowserChat.Value.csproj", "{A00B39ED-DD61-498D-BF7D-DCBBA01AC0E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{B21CD03D-ABA0-4A98-AF8B-8D1ED3849680}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B21CD03D-ABA0-4A98-AF8B-8D1ED3849680}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B21CD03D-ABA0-4A98-AF8B-8D1ED3849680}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D804404-C803-451F-A75D-75D69D80BA2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D804404-C803-451F-A75D-75D69D80BA2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D804404-C803-451F-A75D-75D69D80BA2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D804404-C803-451F-A75D-75D69D80BA2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A00B39ED-DD61-498D-BF7D-DCBBA01AC0E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A00B39ED-DD61-498D-BF7D-DCBBA01AC0E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A00B39ED-DD61-498D-BF7D-DCBBA01AC0E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A00B39ED-DD61-498D-BF7D-DCBBA01AC0E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
