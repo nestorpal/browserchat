@@ -1,6 +1,7 @@
 ﻿using BrowserChat.Entity.DTO;
 using BrowserChat.Security.Core.Application;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrowserChat.Security.Controllers
@@ -14,6 +15,13 @@ namespace BrowserChat.Security.Controllers
         public UserController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<UserReadDTO>> Get()
+        {
+            return await _mediator.Send(new CurrentUser.CurrentUserCommand());
         }
 
         [HttpPost("login")]
