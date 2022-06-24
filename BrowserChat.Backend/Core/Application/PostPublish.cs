@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BrowserChat.Backend.Core.AsyncServices;
 using BrowserChat.Backend.Core.Data;
 using BrowserChat.Backend.Core.HubConfig;
 using BrowserChat.Entity;
@@ -40,7 +41,7 @@ namespace BrowserChat.Backend.Core.Application
                 {
                     if (IsBotCommand(request.Message, out string command, out string value))
                     {
-                        ProcessBotCommand(request, command, value);
+                        await ProcessBotCommand(command, value, request.RoomId);
                     }
                     else
                     {
@@ -80,12 +81,22 @@ namespace BrowserChat.Backend.Core.Application
                 return result;
             }
 
-            private void ProcessBotCommand(
-                PostPublishRequest post,
+            private async Task ProcessBotCommand(
                 string command,
-                string value)
+                string value,
+                string roomId)
             {
-
+                await Task.Run(() =>
+                {
+                    new BotRequestPublisher().Publish(
+                        new BotRequest
+                        {
+                            Command = command,
+                            Value = value,
+                            RoomId = roomId
+                        }
+                    );
+                });
             }
         }
     }

@@ -1,4 +1,5 @@
 using BrowserChat.Backend.Core;
+using BrowserChat.Backend.Core.AsyncServices;
 using BrowserChat.Backend.Core.Data;
 using BrowserChat.Backend.Core.HubConfig;
 using BrowserChat.Backend.Core.Util;
@@ -29,9 +30,11 @@ builder.Services.AddDbContext<BrowserChatDbContext>(opt =>
 
 builder.Services.AddScoped<IBrowserChatRepository, BrowserChatRepository>();
 
+builder.Services.AddHostedService<BotResponseSubscriber>();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddMediatR(typeof(BrowserChat.Backend.Core.Application.PostPublish.PostPublishCommand).Assembly);
+builder.Services.AddMediatR(typeof(BrowserChat.Backend.Core.Application.PostPublish.PostPublishRequest).Assembly);
 
 builder.Services.AddCors(opt =>
 {
@@ -43,7 +46,7 @@ builder.Services.AddCors(opt =>
             .AllowAnyHeader()
             .AllowCredentials()
             .WithOrigins(
-                builder.Configuration.GetValue<string>("ClientDomain")
+                builder.Configuration.GetSection("ClientDomain")?.GetChildren()?.Select(x => x.Value)?.ToArray()
             );
     });
 });
@@ -53,7 +56,7 @@ builder.Services.AddSignalR(opt =>
     opt.EnableDetailedErrors = true;
 });
 
-builder.Services.AddScoped(typeof(HubHelper));
+builder.Services.AddSingleton(typeof(HubHelper));
 
 var app = builder.Build();
 

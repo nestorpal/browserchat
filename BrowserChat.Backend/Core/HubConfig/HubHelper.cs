@@ -14,7 +14,8 @@ namespace BrowserChat.Backend.Core.HubConfig
 
         public async Task PublishPost(string userName, PostPublishDTO post)
         {
-            await _hub.Clients.Group(post.RoomId).SendAsync("ReceiveMessage", post.RoomId, userName, post.Message);
+            //await _hub.Clients.Group(post.RoomId).SendAsync("ReceiveMessage", post.RoomId, userName, post.Message);
+            await _hub.Clients.All.SendAsync("ReceiveMessage", post.RoomId, userName, post.Message);
         }
     }
 }
