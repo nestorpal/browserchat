@@ -10,5 +10,6 @@ namespace BrowserChat.Entity.DTO
     {
         public string RoomId { get; set; }
         public string Message { get; set; }
+        public string TimeStampStr { get; set; }
     }
 }

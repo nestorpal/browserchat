@@ -2,6 +2,7 @@ using BrowserChat.Backend.Core;
 using BrowserChat.Backend.Core.Data;
 using BrowserChat.Backend.Core.HubConfig;
 using BrowserChat.Backend.Core.Util;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,8 @@ builder.Services.AddDbContext<BrowserChatDbContext>(opt =>
 builder.Services.AddScoped<IBrowserChatRepository, BrowserChatRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddMediatR(typeof(BrowserChat.Backend.Core.Application.PostPublish.PostPublishCommand).Assembly);
 
 builder.Services.AddCors(opt =>
 {

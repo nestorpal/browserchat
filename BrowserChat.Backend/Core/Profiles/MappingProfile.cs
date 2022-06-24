@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BrowserChat.Entity;
 using BrowserChat.Entity.DTO;
+using static BrowserChat.Backend.Core.Application.PostPublish;
 
 namespace BrowserChat.Backend.Core.Profiles
 {
@@ -15,9 +16,13 @@ namespace BrowserChat.Backend.Core.Profiles
                 .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => Util.General.EncryptStringEncoded(src.RoomId.ToString())))
                 .ForMember(dest => dest.TimeStampStr, opt => opt.MapFrom(src => src.TimeStamp.ToString("HH:mm:ss")));
 
-            CreateMap<PostPublishDTO, Post>()
+            CreateMap<PostPublishCommand, Post>()
                 .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => DecryptInteger(src.RoomId)))
                 .ForMember(dest => dest.TimeStamp, opt => opt.MapFrom(src => DateTime.Now));
+
+            CreateMap<Post, PostPublishDTO>()
+                .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => Util.General.EncryptStringEncoded(src.RoomId.ToString())))
+                .ForMember(dest => dest.TimeStampStr, opt => opt.MapFrom(src => src.TimeStamp.ToString("HH:mm:ss")));
         }
 
         private int DecryptInteger(string str)
