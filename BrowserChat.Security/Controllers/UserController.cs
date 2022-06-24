@@ -22,5 +22,12 @@ namespace BrowserChat.Security.Controllers
         {
             return await _mediator.Send(paramValues);
         }
+
+        [HttpPost("register")]
+        public async Task<ActionResult<UserReadDTO>> Register(
+            Register.UserRegisterCommand paramValues)
+        {
+            return await _mediator.Send(paramValues);
+        }
     }
 }
