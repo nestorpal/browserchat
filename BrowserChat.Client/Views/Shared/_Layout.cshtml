@@ -19,9 +19,16 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1" style="justify-content: end;">
-                        @if (!string.IsNullOrEmpty(Context.Session.GetString(BrowserChat.Client.Core.Session.Keyword.IsLoggedIn))
-                        )
+                        @if (!string.IsNullOrEmpty(Context.Session.GetString(BrowserChat.Client.Core.Session.Keyword.IsLoggedIn)))
                         {
+                            <li class="nav-item" style="display:table;">
+                                <div style="display:table-cell; vertical-align:middle;">
+                                    <span style="font-weight: bold; padding-right: 15px;">
+                                        @Context.Session.GetString(BrowserChat.Client.Core.Session.Keyword.UserFullName)
+                                    </span>
+                                </div>
+                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
                             </li>

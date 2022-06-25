@@ -10,7 +10,7 @@ namespace BrowserChat.Client.Core.Session
         private readonly string _userSessionKeyword = Keyword.User;
         private readonly string _sessionTokenKeyword = Keyword.SessionToken;
         private readonly string _isLoggedInKeyword = Keyword.IsLoggedIn;
-
+        private readonly string _userFullNameKeyword = Keyword.UserFullName;
 
         public SessionManagement(IHttpContextAccessor httpAccesor)
         {
@@ -22,6 +22,7 @@ namespace BrowserChat.Client.Core.Session
             _httpAccesor.HttpContext?.Session.SetString(_userSessionKeyword, JsonSerializer.Serialize(userSession));
             _httpAccesor.HttpContext?.Session.SetString(_sessionTokenKeyword, userSession.Token);
             _httpAccesor.HttpContext?.Session.SetString(_isLoggedInKeyword, "Y");
+            _httpAccesor.HttpContext?.Session.SetString(_userFullNameKeyword, $"{userSession.Name} {userSession.Surname}");
         }
 
         public string GetSessionToken()

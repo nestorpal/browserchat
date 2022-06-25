@@ -5,5 +5,6 @@
         public const string IsLoggedIn = "IsLoggedIn";
         public const string SessionToken = "SessionToken";
         public const string User = "User";
+        public const string UserFullName = "UserFullName";
     }
 }
