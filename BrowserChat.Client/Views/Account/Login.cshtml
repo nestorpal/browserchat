@@ -2,8 +2,52 @@
     ViewData["Title"] = "Login";
 }
 
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+<style>
+
+    .divider:after,
+    .divider:before {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+    }
+
+    .h-custom {
+        height: calc(100% - 73px);
+    }
+    
+</style>
+
+<section class="v-100">
+    <div class="container-fluid h-custom">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-6">
+                <form action="@Url.Action("Login", "Account")" method="post">
+                    <!-- Email input -->
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="loginEmail">Email address</label>
+                        <input type="email" name="Email" class="form-control form-control-lg"
+                            placeholder="Enter a valid email address"
+                            value="nestor.panu@gmail.com"/>
+                    </div>
+
+                    <!-- Password input -->
+                    <div class="form-outline mb-3">
+                        <label class="form-label" for="loginPassword">Password</label>
+                        <input type="password" name="Password" class="form-control form-control-lg" 
+                            placeholder="Enter password"
+                            value="Password!123"/>
+                    </div>
+
+                    <div class="text-center text-lg-start mt-4 pt-2">
+                        <button type="submit" class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+                        <p class="small fw-bold mt-2 pt-1 mb-0">
+                            Don't have an account? 
+                            <a href="Register" class="link-danger">Register</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
