@@ -17,5 +17,10 @@ namespace BrowserChat.Client.Core.Services
         {
             return _clientHelper.GetResponse<object, IEnumerable<RoomReadDTO>>("chat/rooms", new { });
         }
+
+        public IEnumerable<PostReadDTO> GetRecentPosts(string roomId)
+        {
+            return _clientHelper.GetResponse<object, IEnumerable<PostReadDTO>>("chat/posts", new { roomId = roomId });
+        }
     }
 }

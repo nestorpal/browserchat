@@ -46,7 +46,7 @@
     <div id="tab_item_div">
         <div class="tab-pane" id="tab_item_div_id" room-id="" role="tabpanel">
             <div class="col-12" style="height: 500px;">
-                <div class="col-12 messages" style="height: 100%; overflow-y: scroll;"></div>
+                <div class="col-12 messages" style="height: 100%; overflow-y: scroll; padding: 20px;"></div>
                 <div class="col-12" style="display: flex;">
                     <div class="col-11">
                         <textarea class="message-area form-control form-control-lg" style="width: 100%;"></textarea>
@@ -88,6 +88,11 @@
 
                 this.tabarray.push(roomid);
                 chatManager.FocusTab(roomid);
+
+                chatManager.GetRecentPosts(roomid);
+            }
+            else {
+                chatManager.FocusTab(roomid);
             }
         },
         SelectRoom: function(roomid, flag) {
@@ -105,6 +110,30 @@
             $(`div.tab-pane`).removeClass('active');
             $(`div.tab-pane`).removeClass('show');
             $(`div.tab-pane[room-id="${roomid}"]`).addClass('active show');
+        },
+        GetRecentPosts: function(roomid) {
+            $.ajax({
+                url: "/Home/GetRecentPosts",
+                data: { room: roomid },
+                type: "GET",
+                success: function(data) {
+                    $.each(data, function(key, value ) {
+                        chatManager.DisplayPost(value);
+                    });
+                },
+                error: function() {
+
+                }
+            });
+        },
+        DisplayPost: function(post) {            
+            let target = $(`#myTabcontainer .tab-pane[room-id="${post.roomId}"] .messages`);
+
+            target.append(
+                `<span><b>[${post.timeStampStr}] ${post.userName}</b>: ${post.message}</span><br/>`
+            );
+
+            target.scrollTop(target.height());
         }
     }
 </script>

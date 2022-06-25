@@ -26,6 +26,7 @@ namespace BrowserChat.Client.Controllers
             _sessionMgr = sessionMgr;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             if (_sessionMgr.IsLoggedIn())
@@ -46,6 +47,14 @@ namespace BrowserChat.Client.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
+        }
+
+        [HttpGet]
+        public JsonResult GetRecentPosts(string room)
+        {
+            var result = _restApiService.GetRecentPosts(room).Reverse().ToList();
+
+            return new JsonResult(result);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
