@@ -6,5 +6,6 @@ namespace BrowserChat.Client.Core.Services
     {
         UserReadDTO Login(UserLoginDTO login);
         UserReadDTO ValidateSession();
+        UserReadDTO Register(UserRegisterDTO register);
     }
 }

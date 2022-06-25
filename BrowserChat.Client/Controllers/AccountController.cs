@@ -24,8 +24,7 @@ namespace BrowserChat.Client.Controllers
                 if (!string.IsNullOrEmpty(user?.Token))
                 {
                     _sessionMgr.SetUserSession(user);
-                    return RedirectToAction("Index", "Home");
-                    
+                    return RedirectToAction("Index", "Home");   
                 }
 
                 _sessionMgr.RemoveUserSession();
@@ -55,8 +54,22 @@ namespace BrowserChat.Client.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        [HttpGet]
         public IActionResult Register()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Register(UserRegisterDTO register)
+        {
+            var user = _securityService.Register(register);
+            if (!string.IsNullOrEmpty(user?.Token))
+            {
+                _sessionMgr.SetUserSession(user);
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
     }

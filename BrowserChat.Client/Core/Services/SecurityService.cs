@@ -22,5 +22,10 @@ namespace BrowserChat.Client.Core.Services
         {
             return _clientHelper.GetResponse<object, UserReadDTO>("user", new { });
         }
+
+        public UserReadDTO Register(UserRegisterDTO register)
+        {
+            return _clientHelper.PostResponse<UserRegisterDTO, UserReadDTO>("user/register", register);
+        }
     }
 }
