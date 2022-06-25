@@ -1,8 +1,110 @@
-﻿@{
+﻿@model IEnumerable<BrowserChat.Entity.DTO.RoomReadDTO>
+
+@{
     ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .active-room
+    {
+        background-color: #f1ebeb;
+    }
+</style>
+
+<div class="col-12" style="height: 100%">
+    <div style="display: flex">
+        <div class="col-2" style="padding: 10px;">
+            <ul class="list-group">
+                @foreach (var item in Model)
+                {
+                    <li class="list-group-item" room-id="@item.Id">
+                        <a class="link-primary" onclick="chatManager.AddTab('@item.Id', '@item.Name')">@item.Name</a>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="col-10" style="display: flex; flex-direction: column; padding: 10px;">
+            <div class="col-12">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                </ul>
+            </div>
+            <div class="col-12">
+                <div class="tab-content" id="myTabcontainer">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div style="display: none;">
+    <div id="tab_item_li">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab_item_li_id" data-bs-toggle="tab" data-bs-target="" type="button" role="tab" aria-selected="true" room-id="" onclick="chatManager.FocusTab($(this).attr('room-id'))"></button>
+         </li>
+    </div>
+
+    <div id="tab_item_div">
+        <div class="tab-pane" id="tab_item_div_id" room-id="" role="tabpanel">
+            <div class="col-12" style="height: 500px;">
+                <div class="col-12 messages" style="height: 100%; overflow-y: scroll;"></div>
+                <div class="col-12" style="display: flex;">
+                    <div class="col-11">
+                        <textarea class="message-area form-control form-control-lg" style="width: 100%;"></textarea>
+                    </div>
+                    <div class="col-1">
+                        <button class="btn btn-primary" 
+                            onclick="chatManager.SendMessage($(this).closest('.tab-pane').attr('room-id'))"
+                            style="width: 100%;">
+                            Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var chatManager = {
+        tabarray: [],
+        AddTab: function(roomid, roomname) {
+            if (!this.tabarray.includes(roomid)) {
+                chatManager.SelectRoom(roomid, true);
+
+                let tabLi = $('#tab_item_li').clone();
+                tabLi.attr('id', '');
+                tabLi.find('button').attr('id', `room${roomid}-tab`);
+                tabLi.find('button').attr('room-id', roomid);
+                tabLi.find('button').text(roomname);
+                tabLi.find('button').attr('data-bs-target', `#room${roomid}`);
+
+                let tabDiv = $('#tab_item_div').clone();
+                tabDiv.attr('id', '');
+                tabDiv.find('.tab-pane').attr('id', `#room${roomid}`);
+                tabDiv.find('.tab-pane').attr('room-id', roomid);
+
+                $('#myTab').append(tabLi.html());
+                $('#myTabcontainer').append(tabDiv.html());
+
+                this.tabarray.push(roomid);
+                chatManager.FocusTab(roomid);
+            }
+        },
+        SelectRoom: function(roomid, flag) {
+            if (flag) {
+                $(`li.list-group-item[room-id="${roomid}"]`).addClass("active-room");
+            }
+            else {
+                $(`li.list-group-item[room-id="${roomid}"]`).removeClass("active-room");
+            }
+        },
+        FocusTab: function(roomid) {
+            $(`button.nav-link`).removeClass('active');
+            $(`button.nav-link[room-id="${roomid}"]`).addClass('active');
+
+            $(`div.tab-pane`).removeClass('active');
+            $(`div.tab-pane`).removeClass('show');
+            $(`div.tab-pane[room-id="${roomid}"]`).addClass('active show');
+        }
+    }
+</script>

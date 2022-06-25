@@ -1,4 +1,7 @@
-﻿using BrowserChat.Client.Models;
+﻿using BrowserChat.Client.Core.Services;
+using BrowserChat.Client.Core.Session;
+using BrowserChat.Client.Models;
+using BrowserChat.Entity.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,15 +10,42 @@ namespace BrowserChat.Client.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ISecurityService _securityService;
+        private readonly IRestAPIService _restApiService;
+        private readonly SessionManagement _sessionMgr;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            ISecurityService securityService,
+            IRestAPIService restApiService,
+            SessionManagement sessionMgr)
         {
             _logger = logger;
+            _securityService = securityService;
+            _restApiService = restApiService;
+            _sessionMgr = sessionMgr;
         }
 
         public IActionResult Index()
         {
-            return View();
+            if (_sessionMgr.IsLoggedIn())
+            {
+                var user = _securityService.ValidateSession();
+                if (string.IsNullOrEmpty(user?.Token))
+                {
+                    _sessionMgr.RemoveUserSession();
+                    return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    List<RoomReadDTO> roomList = _restApiService.GetAllRooms().ToList();
+                    return View(roomList);
+                }
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
