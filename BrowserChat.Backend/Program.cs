@@ -4,7 +4,9 @@ using BrowserChat.Backend.Core.Data;
 using BrowserChat.Backend.Core.HubConfig;
 using BrowserChat.Backend.Core.Util;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 bool isProduction = builder.Environment.IsProduction();
@@ -16,6 +18,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+/* Db Context */
+/**************/
 builder.Services.AddDbContext<BrowserChatDbContext>(opt =>
 {
     if (isProduction)
@@ -29,6 +33,23 @@ builder.Services.AddDbContext<BrowserChatDbContext>(opt =>
 });
 
 builder.Services.AddScoped<IBrowserChatRepository, BrowserChatRepository>();
+/**************/
+
+/* JWT */
+/**************/
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opt =>
+    {
+        opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JWTKey"))),
+            ValidateIssuerSigningKey = true,
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+/**************/
+
 
 builder.Services.AddHostedService<BotResponseSubscriber>();
 
@@ -72,6 +93,7 @@ app.MapHub<HubBase>("/hub");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

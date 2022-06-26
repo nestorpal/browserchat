@@ -7,6 +7,7 @@ using BrowserChat.Entity.DTO;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using BrowserChat.Backend.Core.Application;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BrowserChat.Backend.Controllers
 {
@@ -28,6 +29,7 @@ namespace BrowserChat.Backend.Controllers
             _mediator = mediator;
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<PostReadDTO>> GetRecentPosts(string roomId)
         {
@@ -40,6 +42,7 @@ namespace BrowserChat.Backend.Controllers
             throw new ArgumentException();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task PublishPost(PostPublish.PostPublishRequest postPublish)
         {

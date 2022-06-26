@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BrowserChat.Backend.Core.Data;
 using BrowserChat.Entity.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrowserChat.Backend.Controllers
@@ -18,6 +19,7 @@ namespace BrowserChat.Backend.Controllers
             _mapper = mapper;
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<RoomReadDTO>> GetAllRooms()
         {
