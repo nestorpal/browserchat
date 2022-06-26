@@ -6,5 +6,6 @@ namespace BrowserChat.Client.Core.Services
     {
         IEnumerable<RoomReadDTO> GetAllRooms();
         IEnumerable<PostReadDTO> GetRecentPosts(string roomId);
+        void PublishPost(PostPublishDTO post);
     }
 }

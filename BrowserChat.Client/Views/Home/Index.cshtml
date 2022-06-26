@@ -13,7 +13,7 @@
 
 <div class="col-12" style="height: 100%">
     <div style="display: flex">
-        <div class="col-2" style="padding: 10px;">
+        <div class="col-3" style="padding: 10px;">
             <ul class="list-group">
                 @foreach (var item in Model)
                 {
@@ -23,7 +23,7 @@
                 }
             </ul>
         </div>
-        <div class="col-10" style="display: flex; flex-direction: column; padding: 10px;">
+        <div class="col-9" style="display: flex; flex-direction: column; padding: 10px;">
             <div class="col-12">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                 </ul>
@@ -53,7 +53,7 @@
                     </div>
                     <div class="col-1">
                         <button class="btn btn-primary" 
-                            onclick="chatManager.SendMessage($(this).closest('.tab-pane').attr('room-id'))"
+                            onclick="chatManager.SendPost($(this).closest('.tab-pane').attr('room-id'))"
                             style="width: 100%;">
                             Send
                         </button>
@@ -64,9 +64,12 @@
     </div>
 </div>
 
+<script src="~/lib//microsoft/signalr/dist/browser/signalr.min.js"></script>
+
 <script type="text/javascript">
     var chatManager = {
         tabarray: [],
+        connection: null,
         AddTab: function(roomid, roomname) {
             if (!this.tabarray.includes(roomid)) {
                 chatManager.SelectRoom(roomid, true);
@@ -90,6 +93,7 @@
                 chatManager.FocusTab(roomid);
 
                 chatManager.GetRecentPosts(roomid);
+                chatManager.ConnectRoom(roomid);
             }
             else {
                 chatManager.FocusTab(roomid);
@@ -126,6 +130,23 @@
                 }
             });
         },
+        SendPost: function(roomid) {
+            let textArea = $(`#myTabcontainer .tab-pane[room-id="${roomid}"] textarea`); 
+            let message = textArea.val();
+
+            $.ajax({
+                url: "/Home/PublishPost",
+                data: { roomId: roomid, message: message },
+                type: "POST",
+                success: function(data) {
+                },
+                error: function() {
+                }
+            });
+
+            textArea.val('');
+            textArea.text('');
+        },
         DisplayPost: function(post) {            
             let target = $(`#myTabcontainer .tab-pane[room-id="${post.roomId}"] .messages`);
 
@@ -134,6 +155,24 @@
             );
 
             target.scrollTop(target.height());
+        },
+        ConfigureConnection: function() {
+
+            chatManager.connection = new signalR.HubConnectionBuilder().withUrl("@ViewBag.hubService").build();
+
+            chatManager.connection.start();
+
+            chatManager.connection.on("ReceiveMessage", (roomId, user, message, timestamp) => {
+                chatManager.DisplayPost({ roomId: roomId, userName: user, message: message, timeStampStr: timestamp });
+            });
+        },
+        ConnectRoom: function(roomid) {
+            chatManager.connection.invoke("AddToRoom", roomid);
         }
     }
+</script>
+<script type="text/javascript">
+
+    chatManager.ConfigureConnection();
+
 </script>

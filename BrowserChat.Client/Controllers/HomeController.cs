@@ -9,18 +9,18 @@ namespace BrowserChat.Client.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IConfiguration _config;
         private readonly ISecurityService _securityService;
         private readonly IRestAPIService _restApiService;
         private readonly SessionManagement _sessionMgr;
 
         public HomeController(
-            ILogger<HomeController> logger,
+            IConfiguration config,
             ISecurityService securityService,
             IRestAPIService restApiService,
             SessionManagement sessionMgr)
         {
-            _logger = logger;
+            _config = config;
             _securityService = securityService;
             _restApiService = restApiService;
             _sessionMgr = sessionMgr;
@@ -39,6 +39,7 @@ namespace BrowserChat.Client.Controllers
                 }
                 else
                 {
+                    ViewBag.hubService = _config["HubService"];
                     List<RoomReadDTO> roomList = _restApiService.GetAllRooms().ToList();
                     return View(roomList);
                 }
@@ -55,6 +56,21 @@ namespace BrowserChat.Client.Controllers
             var result = _restApiService.GetRecentPosts(room).Reverse().ToList();
 
             return new JsonResult(result);
+        }
+
+        [HttpPost]
+        public JsonResult PublishPost(PostPublishDTO post)
+        {
+            bool result = false;
+            try
+            {
+                _restApiService.PublishPost(post);
+                result = true;
+            }
+            catch { }
+            
+
+            return new JsonResult(new { result = result });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
