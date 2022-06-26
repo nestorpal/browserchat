@@ -14,6 +14,7 @@
 <div class="col-12" style="height: 100%">
     <div style="display: flex">
         <div class="col-3" style="padding: 10px;">
+            <span style="font-size: 1.5rem;">Rooms</span>
             <ul class="list-group">
                 @foreach (var item in Model)
                 {
@@ -39,7 +40,14 @@
 <div style="display: none;">
     <div id="tab_item_li">
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab_item_li_id" data-bs-toggle="tab" data-bs-target="" type="button" role="tab" aria-selected="true" room-id="" onclick="chatManager.FocusTab($(this).attr('room-id'))"></button>
+            <button class="nav-link" id="tab_item_li_id" data-bs-toggle="tab" 
+                data-bs-target="" type="button" role="tab" aria-selected="true" 
+                room-id="" onclick="chatManager.FocusTab($(this).attr('room-id'))">
+                <span class="tab-name"></span>
+                <span class="dismiss" style="padding-left: 5px;">
+                    <a style="color: red; font-weight: bold; font-size: 16px;" onclick="chatManager.CloseTab(this);">x</a>
+                </span>
+            </button>
          </li>
     </div>
 
@@ -74,16 +82,18 @@
             if (!this.tabarray.includes(roomid)) {
                 chatManager.SelectRoom(roomid, true);
 
+                let newTabId = new Date().getTime();
+
                 let tabLi = $('#tab_item_li').clone();
                 tabLi.attr('id', '');
-                tabLi.find('button').attr('id', `room${roomid}-tab`);
+                tabLi.find('button').attr('id', `room${newTabId}-tab`);
                 tabLi.find('button').attr('room-id', roomid);
-                tabLi.find('button').text(roomname);
-                tabLi.find('button').attr('data-bs-target', `#room${roomid}`);
+                tabLi.find('button').find('.tab-name').text(roomname);
+                tabLi.find('button').attr('data-bs-target', `#room${newTabId}`);
 
                 let tabDiv = $('#tab_item_div').clone();
                 tabDiv.attr('id', '');
-                tabDiv.find('.tab-pane').attr('id', `#room${roomid}`);
+                tabDiv.find('.tab-pane').attr('id', `room${newTabId}`);
                 tabDiv.find('.tab-pane').attr('room-id', roomid);
 
                 $('#myTab').append(tabLi.html());
@@ -108,12 +118,30 @@
             }
         },
         FocusTab: function(roomid) {
-            $(`button.nav-link`).removeClass('active');
-            $(`button.nav-link[room-id="${roomid}"]`).addClass('active');
+            if (this.tabarray.includes(roomid)) {
+                $(`button.nav-link`).removeClass('active');
+                $(`button.nav-link[room-id="${roomid}"]`).addClass('active');
 
-            $(`div.tab-pane`).removeClass('active');
-            $(`div.tab-pane`).removeClass('show');
-            $(`div.tab-pane[room-id="${roomid}"]`).addClass('active show');
+                $(`div.tab-pane`).removeClass('active');
+                $(`div.tab-pane`).removeClass('show');
+                $(`div.tab-pane[room-id="${roomid}"]`).addClass('active show');
+            }
+        },
+        CloseTab: function(control) {
+            let liButton = $(control).closest('.nav-link');
+            let roomId = liButton.attr('room-id');
+
+            liButton.closest('.nav-item').remove();
+            $(`div.tab-pane[room-id="${roomId}"]`).remove();
+
+            chatManager.SelectRoom(roomId, false);
+            chatManager.DisconnectRoom(roomId);
+
+            chatManager.tabarray = chatManager.tabarray.filter(tab => tab != roomId);
+            if (!$('.nav-link.active').length) {
+                let newRoomId = chatManager.tabarray[chatManager.tabarray.length - 1];
+                chatManager.FocusTab(newRoomId);
+            }
         },
         GetRecentPosts: function(roomid) {
             $.ajax({
@@ -168,6 +196,9 @@
         },
         ConnectRoom: function(roomid) {
             chatManager.connection.invoke("AddToRoom", roomid);
+        },
+        DisconnectRoom: function(roomid) {
+            chatManager.connection.invoke("RemoveFromRoom", roomid);
         }
     }
 </script>

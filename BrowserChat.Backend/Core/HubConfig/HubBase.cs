@@ -8,5 +8,10 @@ namespace BrowserChat.Backend.Core.HubConfig
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
         }
+
+        public async Task RemoveFromRoom(string roomId)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
+        }
     }
 }
