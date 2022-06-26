@@ -2,6 +2,7 @@
 using BrowserChat.Entity.DTO;
 using BrowserChat.Security.Core.Entities;
 using BrowserChat.Security.Core.JWTLogic;
+using BrowserChat.Value;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -43,7 +44,7 @@ namespace BrowserChat.Security.Core.Application
                     return usrDTO;
                 }
 
-                throw new Exception("User not found");
+                throw new Exception(Constant.MessagesAndExceptions.Security.UserNotFound);
             }
 
             public string GetUserSession()

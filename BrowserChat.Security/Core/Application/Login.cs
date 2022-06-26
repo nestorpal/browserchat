@@ -2,6 +2,7 @@
 using BrowserChat.Entity.DTO;
 using BrowserChat.Security.Core.Entities;
 using BrowserChat.Security.Core.JWTLogic;
+using BrowserChat.Value;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -39,7 +40,7 @@ namespace BrowserChat.Security.Core.Application
                 var user = await this._usrManager.FindByEmailAsync(request.Email);
 
                 if (user == null)
-                    throw new Exception("User not found");
+                    throw new Exception(Constant.MessagesAndExceptions.Security.UserNotFound);
 
                 var result = await _signManager.CheckPasswordSignInAsync(user, request.Password, false);
 
@@ -52,7 +53,7 @@ namespace BrowserChat.Security.Core.Application
                     return userDTO;
                 }
 
-                throw new Exception("Incorrect Login");
+                throw new Exception(Constant.MessagesAndExceptions.Security.IncorrectLogin);
             }
         }
     }

@@ -73,6 +73,14 @@ namespace BrowserChat.Value
                 public static readonly string IncompleteIncorrectData = "Incorrect or incomplete data";
             }
 
+            public static class Security
+            {
+                public static readonly string UserNotFound = "User not found";
+                public static readonly string IncorrectLogin = "Incorrect Login";
+                public static readonly string EmailAlreadyExists = "The email provided already exists";
+                public static readonly string UnerNameAlreadyExists = "The username provided already exists";
+                public static readonly string CouldNotRegisterUser = "Couldn't register user";
+            }
             public static class General
             {
                 public static readonly string UnexpectedError = "Unexpected Error. Detail: {0}";

@@ -1,4 +1,5 @@
 ﻿using BrowserChat.Security.Core.Entities;
+using BrowserChat.Value;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,13 +39,13 @@ namespace BrowserChat.Security.Core.Data
             {
                 var user = new User
                 {
-                    Name = "Nestor",
-                    Surname = "Palacios",
-                    UserName = "nestor.panu",
-                    Email = "nestor.panu@gmail.com"
+                    Name = Constant.Samples.BaseUser.Name,
+                    Surname = Constant.Samples.BaseUser.Surname,
+                    UserName = Constant.Samples.BaseUser.UserName,
+                    Email = Constant.Samples.BaseUser.Email
                 };
 
-                await usrManager.CreateAsync(user, "Password!123");
+                await usrManager.CreateAsync(user, Constant.Samples.BaseUser.Password);
             }
         }
     }

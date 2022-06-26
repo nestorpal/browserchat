@@ -3,6 +3,7 @@ using BrowserChat.Entity.DTO;
 using BrowserChat.Security.Core.Data;
 using BrowserChat.Security.Core.Entities;
 using BrowserChat.Security.Core.JWTLogic;
+using BrowserChat.Value;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -45,11 +46,11 @@ namespace BrowserChat.Security.Core.Application
             {
                 var exists = await _context.Users.Where(u => u.Email == request.Email).AnyAsync();
                 if (exists)
-                    throw new Exception("The email provided already exists");
+                    throw new Exception(Constant.MessagesAndExceptions.Security.EmailAlreadyExists);
 
                 exists = await _context.Users.Where(u => u.UserName == request.UserName).AnyAsync();
                 if (exists)
-                    throw new Exception("The username provided already exists");
+                    throw new Exception(Constant.MessagesAndExceptions.Security.UnerNameAlreadyExists);
 
                 var user = new User
                 {
@@ -68,7 +69,7 @@ namespace BrowserChat.Security.Core.Application
                     return userDTO;
                 }
 
-                throw new Exception("Couldn't register user");
+                throw new Exception(Constant.MessagesAndExceptions.Security.CouldNotRegisterUser);
             }
         }
     }
