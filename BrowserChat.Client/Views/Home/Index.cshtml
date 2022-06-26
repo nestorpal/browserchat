@@ -56,10 +56,10 @@
             <div class="col-12" style="height: 500px;">
                 <div class="col-12 messages" style="height: 100%; overflow-y: scroll; padding: 20px;"></div>
                 <div class="col-12" style="display: flex;">
-                    <div class="col-11">
+                    <div class="col-10">
                         <textarea class="message-area form-control form-control-lg" style="width: 100%;"></textarea>
                     </div>
-                    <div class="col-1">
+                    <div class="col-2">
                         <button class="btn btn-primary" 
                             onclick="chatManager.SendPost($(this).closest('.tab-pane').attr('room-id'))"
                             style="width: 100%;">
@@ -99,11 +99,19 @@
                 $('#myTab').append(tabLi.html());
                 $('#myTabcontainer').append(tabDiv.html());
 
-                this.tabarray.push(roomid);
+                chatManager.tabarray.push(roomid);
                 chatManager.FocusTab(roomid);
 
                 chatManager.GetRecentPosts(roomid);
-                chatManager.ConnectRoom(roomid);
+
+                if (chatManager.connection == null) {
+                    chatManager.ConfigureConnection().then(() => {
+                        chatManager.ConnectRoom(roomid);
+                    });
+                }
+                else {
+                    chatManager.ConnectRoom(roomid);
+                }
             }
             else {
                 chatManager.FocusTab(roomid);
@@ -186,16 +194,17 @@
 
             target.scrollTop(target.height());
         },
-        ConfigureConnection: function() {
-
+        ConfigureConnection: () => new Promise((resolve, reject) => {
             chatManager.connection = new signalR.HubConnectionBuilder().withUrl("@ViewBag.hubService").build();
 
-            chatManager.connection.start();
+            chatManager.connection.start().then(() => {
+                chatManager.connection.on("ReceiveMessage", (roomId, user, message, timestamp) => {
+                    chatManager.DisplayPost({ roomId: roomId, userName: user, message: message, timeStampStr: timestamp });
+                });
 
-            chatManager.connection.on("ReceiveMessage", (roomId, user, message, timestamp) => {
-                chatManager.DisplayPost({ roomId: roomId, userName: user, message: message, timeStampStr: timestamp });
+                resolve();
             });
-        },
+        }),
         ConnectRoom: function(roomid) {
             chatManager.connection.invoke("AddToRoom", roomid);
         },
@@ -203,9 +212,4 @@
             chatManager.connection.invoke("RemoveFromRoom", roomid);
         }
     }
-</script>
-<script type="text/javascript">
-
-    chatManager.ConfigureConnection();
-
 </script>
