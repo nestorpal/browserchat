@@ -52,9 +52,26 @@ namespace BrowserChat.Value
             }
         }
 
-        public static class ExceptionMessage
+        public static class MessagesAndExceptions
         {
-            
+            public static class Bot
+            {
+                public static class Command
+                {
+                    public static class Stock
+                    {
+                        public static readonly string ValidResult = "{0} quote is ${1} per share";
+                        public static readonly string QuoteDataNotDefined = "{0} quote data not defined";
+                        public static readonly string QuoteNotAvailable = "Could not get quote value for {0}. Data structre may have changed";
+                        public static readonly string InvalidValue = "{0} is not a valid value";
+                    }
+                }
+            }
+
+            public static class General
+            {
+                public static readonly string UnexpectedError = "Unexpected Error. Detail: {0}";
+            }
         }
     }
 }

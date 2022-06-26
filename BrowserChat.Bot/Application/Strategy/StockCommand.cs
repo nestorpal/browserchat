@@ -27,46 +27,75 @@ namespace BrowserChat.Bot.Application.Strategy
 
             try
             {
-                string requestUrl = _stockApi.Replace("{stock_code}", request.Value);
-
-                var responseStream =
-                    new MemoryStream(
-                        new WebClient().DownloadData(
-                            requestUrl
-                        )
-                    );
-
-                string responseContent = Encoding.ASCII.GetString(responseStream.ToArray());
-                if (!string.IsNullOrEmpty(responseContent))
+                if (IsValidValue(request.Value))
                 {
-                    List<string> csvHeader = responseContent.Split("\r\n")[0].Split(",").Select(h => h.ToLower()).ToList();
-                    List<string> csvValue = responseContent.Split("\r\n")[1].Split(",").ToList();
+                    string requestUrl = _stockApi.Replace("{stock_code}", request.Value);
 
-                    int dataKeyIndex = csvHeader.IndexOf(_stockDataKey);
-                    
-                    if (dataKeyIndex >= 0)
+                    var responseStream =
+                        new MemoryStream(
+                            new WebClient().DownloadData(
+                                requestUrl
+                            )
+                        );
+
+                    string responseContent = Encoding.ASCII.GetString(responseStream.ToArray());
+                    if (!string.IsNullOrEmpty(responseContent))
                     {
-                        string stockValueStr = csvValue[dataKeyIndex];
+                        List<string> csvHeader = responseContent.Split("\r\n")[0].Split(",").Select(h => h.ToLower()).ToList();
+                        List<string> csvValue = responseContent.Split("\r\n")[1].Split(",").ToList();
 
-                        if (IsValidNumber(stockValueStr))
+                        int dataKeyIndex = csvHeader.IndexOf(_stockDataKey);
+
+                        if (dataKeyIndex >= 0)
                         {
-                            resultMessage = $"{request.Value.ToUpper()} quote is ${csvValue[dataKeyIndex]} per share";
-                            result = true;
+                            string stockValueStr = csvValue[dataKeyIndex];
+
+                            if (IsValidNumber(stockValueStr))
+                            {
+                                resultMessage =
+                                    string.Format(
+                                        Constant.MessagesAndExceptions.Bot.Command.Stock.ValidResult,
+                                        request.Value.ToUpper(),
+                                        csvValue[dataKeyIndex]
+                                    );
+
+                                result = true;
+                            }
+                            else
+                            {
+                                resultMessage =
+                                    string.Format(
+                                        Constant.MessagesAndExceptions.Bot.Command.Stock.QuoteDataNotDefined,
+                                        request.Value.ToUpper()
+                                    );
+                            }
                         }
                         else
                         {
-                            resultMessage = $"{request.Value.ToUpper()} quote data not defined";
+                            resultMessage =
+                                string.Format(
+                                    Constant.MessagesAndExceptions.Bot.Command.Stock.QuoteNotAvailable,
+                                    request.Value.ToUpper()
+                                );
                         }
                     }
-                    else
-                    {
-                        resultMessage = $"Could not get quote value for {request.Value.ToUpper()}";
-                    }
+                }
+                else
+                {
+                    resultMessage =
+                        string.Format(
+                            Constant.MessagesAndExceptions.Bot.Command.Stock.InvalidValue,
+                            request.Value
+                        );
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                resultMessage = $"{request.Value.ToUpper()} is not a valid value";
+                resultMessage =
+                    string.Format(
+                        Constant.MessagesAndExceptions.General.UnexpectedError,
+                        ex.Message.ToString()
+                    );
             }
 
 
@@ -84,6 +113,12 @@ namespace BrowserChat.Bot.Application.Strategy
         private bool IsValidNumber(string value)
         {
             Regex regex = new Regex("[^a-zA-Z/]");
+            return regex.Match(value).Success;
+        }
+
+        private bool IsValidValue(string value)
+        {
+            Regex regex = new Regex("^[a-zA-Z]+\\.[a-zA-Z]+$");
             return regex.Match(value).Success;
         }
     }

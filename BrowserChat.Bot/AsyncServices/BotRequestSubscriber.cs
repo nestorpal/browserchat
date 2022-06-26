@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BrowserChat.Value;
 
 namespace BrowserChat.Bot.AsyncServices
 {
@@ -12,7 +13,6 @@ namespace BrowserChat.Bot.AsyncServices
     {
         private readonly ILogger<Worker> _logger;
         private readonly IConfiguration _config;
-        private readonly string _queueName = "BotRequest";
 
         public BotRequestSubscriber(ILogger<Worker> logger, IConfiguration config)
         {
@@ -27,7 +27,7 @@ namespace BrowserChat.Bot.AsyncServices
             using (var channel = connection.CreateModel())
             {
                 channel.QueueDeclare(
-                    queue: _queueName,
+                    queue: Constant.QueueService.QueueName.BotRequest,
                     durable: false,
                     exclusive: false,
                     autoDelete: false,
@@ -43,14 +43,14 @@ namespace BrowserChat.Bot.AsyncServices
                 };
 
                 channel.BasicConsume(
-                    queue: _queueName,
+                    queue: Constant.QueueService.QueueName.BotRequest,
                     autoAck: true,
                     consumer: consumer
                 );
 
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    _logger.LogInformation($"Listening queue {_queueName} at: {DateTimeOffset.Now}");
+                    _logger.LogInformation($"Listening queue {Constant.QueueService.QueueName.BotRequest} at: {DateTimeOffset.Now}");
                     await Task.Delay(5000, stoppingToken);
                 }
             }
