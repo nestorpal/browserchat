@@ -162,18 +162,20 @@
             let textArea = $(`#myTabcontainer .tab-pane[room-id="${roomid}"] textarea`); 
             let message = textArea.val();
 
-            $.ajax({
-                url: "/Home/PublishPost",
-                data: { roomId: roomid, message: message },
-                type: "POST",
-                success: function(data) {
-                },
-                error: function() {
-                }
-            });
+            if (message) {
+                $.ajax({
+                    url: "/Home/PublishPost",
+                    data: { roomId: roomid, message: encodeURIComponent(message) },
+                    type: "POST",
+                    success: function(data) {
+                    },
+                    error: function() {
+                    }
+                });
 
-            textArea.val('');
-            textArea.text('');
+                textArea.val('');
+                textArea.text('');
+            }
         },
         DisplayPost: function(post) {            
             let target = $(`#myTabcontainer .tab-pane[room-id="${post.roomId}"] .messages`);

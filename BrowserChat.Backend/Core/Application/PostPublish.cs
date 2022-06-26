@@ -45,7 +45,9 @@ namespace BrowserChat.Backend.Core.Application
             {
                 if (request != null)
                 {
-                    if (IsBotCommand(request.Message, out string command, out string value))
+                    var post = _mapper.Map<Post>(request);
+
+                    if (IsBotCommand(post.Message, out string command, out string value))
                     {
                         await ProcessBotCommand(command, value, request.RoomId);
                     }
@@ -53,7 +55,6 @@ namespace BrowserChat.Backend.Core.Application
                     {
                         string userName = GetUserSession();
 
-                        var post = _mapper.Map<Post>(request);
                         post.UserName = userName;
 
                         _repo.RegisterPost(post);

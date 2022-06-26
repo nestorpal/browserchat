@@ -17,6 +17,7 @@ namespace BrowserChat.Backend.Core.Profiles
                 .ForMember(dest => dest.TimeStampStr, opt => opt.MapFrom(src => src.TimeStamp.ToString("HH:mm:ss")));
 
             CreateMap<PostPublishRequest, Post>()
+                .ForMember(dest => dest.Message, opt => opt.MapFrom(src => System.Web.HttpUtility.UrlDecode(src.Message)))
                 .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => DecryptInteger(src.RoomId)))
                 .ForMember(dest => dest.TimeStamp, opt => opt.MapFrom(src => DateTime.Now));
 
