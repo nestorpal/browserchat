@@ -56,6 +56,8 @@ namespace BrowserChat.Value
         {
             public static class Bot
             {
+                public static readonly string BotName = "chatbot";
+
                 public static class Command
                 {
                     public static class Stock
