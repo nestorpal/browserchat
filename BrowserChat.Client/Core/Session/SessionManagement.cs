@@ -35,6 +35,7 @@ namespace BrowserChat.Client.Core.Session
             _httpAccesor.HttpContext?.Session.SetString(_userSessionKeyword, string.Empty);
             _httpAccesor.HttpContext?.Session.SetString(_sessionTokenKeyword, string.Empty);
             _httpAccesor.HttpContext?.Session.SetString(_isLoggedInKeyword, string.Empty);
+            _httpAccesor.HttpContext?.Session.SetString(_userFullNameKeyword, string.Empty);
         }
 
         public bool IsLoggedIn()

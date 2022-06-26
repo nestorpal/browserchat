@@ -1,6 +1,7 @@
 ﻿using BrowserChat.Client.Core.Services;
 using BrowserChat.Client.Core.Session;
 using BrowserChat.Entity.DTO;
+using BrowserChat.Value;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrowserChat.Client.Controllers
@@ -46,7 +47,7 @@ namespace BrowserChat.Client.Controllers
                 }
             }
 
-            ViewBag.errorMessage = "Incorrect or incomplete data";
+            ViewBag.errorMessage = Constant.MessagesAndExceptions.Client.IncompleteIncorrectData;
 
             return View(login);
         }
@@ -76,7 +77,7 @@ namespace BrowserChat.Client.Controllers
                 }
             }
 
-            ViewBag.errorMessage = "Incorrect or incomplete data";
+            ViewBag.errorMessage = Constant.MessagesAndExceptions.Client.IncompleteIncorrectData;
 
             return View();
         }

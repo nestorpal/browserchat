@@ -68,6 +68,11 @@ namespace BrowserChat.Value
                 }
             }
 
+            public static class Client
+            {
+                public static readonly string IncompleteIncorrectData = "Incorrect or incomplete data";
+            }
+
             public static class General
             {
                 public static readonly string UnexpectedError = "Unexpected Error. Detail: {0}";
