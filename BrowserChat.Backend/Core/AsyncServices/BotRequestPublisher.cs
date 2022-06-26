@@ -1,4 +1,5 @@
 ﻿using BrowserChat.Entity;
+using BrowserChat.Value;
 using BrowserChat.Util;
 using RabbitMQ.Client;
 using System.Text;
@@ -8,8 +9,6 @@ namespace BrowserChat.Backend.Core.AsyncServices
 {
     public class BotRequestPublisher
     {
-        private readonly string _queueName = "BotRequest";
-
         public void Publish(BotRequest request)
         {
             var factory = new ConnectionFactory() { HostName = Util.ConfigurationHelper.config["RabbitMQHost"] };
@@ -17,19 +16,21 @@ namespace BrowserChat.Backend.Core.AsyncServices
             using (var channel = connection.CreateModel())
             {
                 channel.QueueDeclare(
-                    queue: _queueName,
+                    queue: Constant.QueueService.QueueName.BotRequest,
                     durable: false,
                     exclusive: false,
                     autoDelete: false,
-                    arguments: null);
+                    arguments: null
+                );
 
                 var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request));
 
                 channel.BasicPublish(
-                    exchange: "",
-                    routingKey: _queueName,
+                    exchange: string.Empty,
+                    routingKey: Constant.QueueService.QueueName.BotRequest,
                     basicProperties: null,
-                    body: body);
+                    body: body
+                );
             }
         }
     }

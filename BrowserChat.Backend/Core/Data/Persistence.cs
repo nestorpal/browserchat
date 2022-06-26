@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BrowserChat.Entity;
+using BrowserChat.Value;
 
 namespace BrowserChat.Backend.Core.Data
 {
@@ -30,12 +31,10 @@ namespace BrowserChat.Backend.Core.Data
 
             if (!context.Rooms.Any())
             {
-                context.Rooms.AddRange(
-                    new Room { Name = "Programming" },
-                    new Room { Name = "Music" },
-                    new Room { Name = "Literature" },
-                    new Room { Name = "Science" }
-                );
+                Constant.Samples.Rooms
+                    .ForEach(room => {
+                        context.Rooms.Add(new Room { Name = room });
+                    });
 
                 context.SaveChanges();
             }
@@ -46,7 +45,14 @@ namespace BrowserChat.Backend.Core.Data
 
                 for (int i = 1; i <= 100; i++)
                 {
-                    context.Posts.Add(new Post { Message = $"Message #{i}", RoomId = rnd.Next(1, 5), TimeStamp = DateTime.Now, UserName = "nestor.panu" });
+                    context.Posts.Add(
+                        new Post
+                        {
+                            Message = $"{Constant.Samples.MessageTemplate}{i}",
+                            RoomId = rnd.Next(1, 5),
+                            TimeStamp = DateTime.Now,
+                            UserName = Constant.Samples.BaseUser.UserName
+                        });
                 }
 
                 context.SaveChanges();

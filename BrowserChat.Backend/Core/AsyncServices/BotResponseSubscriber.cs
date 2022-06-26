@@ -1,5 +1,6 @@
 ﻿using BrowserChat.Backend.Core.HubConfig;
 using BrowserChat.Entity;
+using BrowserChat.Value;
 using Microsoft.AspNetCore.SignalR;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -14,7 +15,6 @@ namespace BrowserChat.Backend.Core.AsyncServices
         private readonly HubHelper _hubHelper;
         private IConnection _conn;
         private IModel _channel;
-        private readonly string _queueName = "BotResponse";
 
         public BotResponseSubscriber(
             IConfiguration config,
@@ -22,6 +22,7 @@ namespace BrowserChat.Backend.Core.AsyncServices
         {
             _config = config;
             _hubHelper = hubHelper;
+
             InitializeRabbitMQ();
         }
 
@@ -36,21 +37,21 @@ namespace BrowserChat.Backend.Core.AsyncServices
             _conn = factory.CreateConnection();
             _channel = _conn.CreateModel();
             _channel.ExchangeDeclare(
-                exchange: "trigger",
+                exchange: Constant.QueueService.ConfigurationParams.ExchangeMode,
                 type: ExchangeType.Fanout
             );
 
             _channel.QueueDeclare(
-                    queue: _queueName,
+                    queue: Constant.QueueService.QueueName.BotResponse,
                     durable: false,
                     exclusive: false,
                     autoDelete: false,
                     arguments: null);
 
             _channel.QueueBind(
-                queue: _queueName,
-                exchange: "trigger",
-                routingKey: ""
+                queue: Constant.QueueService.QueueName.BotResponse,
+                exchange: Constant.QueueService.ConfigurationParams.ExchangeMode,
+                routingKey: string.Empty
             );
 
             _conn.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
@@ -77,7 +78,7 @@ namespace BrowserChat.Backend.Core.AsyncServices
                             {
                                 Message = response.Message,
                                 RoomId = response.RoomId,
-                                TimeStampStr = DateTime.Now.ToString("HH:mm:ss")
+                                TimeStampStr = DateTime.Now.ToString(Constant.General.ConversionTimeFormat)
                             }
                         );
                     }
@@ -85,7 +86,7 @@ namespace BrowserChat.Backend.Core.AsyncServices
             };
 
             _channel.BasicConsume(
-                queue: _queueName,
+                queue: Constant.QueueService.QueueName.BotResponse,
                 autoAck: true,
                 consumer: consumer
             );

@@ -1,4 +1,5 @@
 ﻿using BrowserChat.Entity.DTO;
+using BrowserChat.Value;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BrowserChat.Backend.Core.HubConfig
@@ -14,7 +15,14 @@ namespace BrowserChat.Backend.Core.HubConfig
 
         public async Task PublishPost(string userName, PostPublishDTO post)
         {
-            await _hub.Clients.Group(post.RoomId).SendAsync("ReceiveMessage", post.RoomId, userName, post.Message, post.TimeStampStr);
+            await _hub.Clients.Group(post.RoomId)
+                .SendAsync(
+                    Constant.HubService.Events.ReceiveMessage,
+                    post.RoomId,
+                    userName,
+                    post.Message,
+                    post.TimeStampStr
+                );
         }
     }
 }
