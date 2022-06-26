@@ -18,6 +18,9 @@ namespace BrowserChat.Backend.Core.Data
                 .HasForeignKey(p => p.RoomId);
 
             builder.Entity<Post>()
+                .HasAlternateKey(p => new { p.RoomId, p.TimeStamp });
+
+            builder.Entity<Post>()
                 .HasOne(p => p.Room)
                 .WithMany(r => r.Posts)
                 .HasForeignKey(p => p.RoomId);
