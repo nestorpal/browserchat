@@ -27,12 +27,18 @@ namespace BrowserChat.Backend.Core.Application
             private readonly HubHelper _hubHelper;
             private readonly IMapper _mapper;
             private readonly IBrowserChatRepository _repo;
+            private readonly IHttpContextAccessor _httpAccesor;
 
-            public PostPublishHandler(HubHelper hubHelper, IMapper mapper, IBrowserChatRepository repo)
+            public PostPublishHandler(
+                HubHelper hubHelper,
+                IMapper mapper,
+                IBrowserChatRepository repo,
+                IHttpContextAccessor httpAccesor)
             {
                 _hubHelper = hubHelper;
                 _mapper = mapper;
                 _repo = repo;
+                _httpAccesor = httpAccesor;
             }
 
             public async Task<OkResult> Handle(PostPublishRequest request, CancellationToken cancellationToken)
@@ -45,7 +51,7 @@ namespace BrowserChat.Backend.Core.Application
                     }
                     else
                     {
-                        string userName = "nestor.panu"; // temporarily hardcoded. Afterwards the value will come from HttpContext
+                        string userName = GetUserSession();
 
                         var post = _mapper.Map<Post>(request);
                         post.UserName = userName;
@@ -61,6 +67,12 @@ namespace BrowserChat.Backend.Core.Application
                 }
 
                 throw new ArgumentNullException();
+            }
+
+            public string GetUserSession()
+            {
+                var userName = _httpAccesor.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == "username")?.Value;
+                return userName;
             }
 
             private bool IsBotCommand(string message, out string command, out string value)
