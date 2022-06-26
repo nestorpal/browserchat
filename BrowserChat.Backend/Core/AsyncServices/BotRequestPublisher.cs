@@ -11,7 +11,7 @@ namespace BrowserChat.Backend.Core.AsyncServices
     {
         public void Publish(BotRequest request)
         {
-            var factory = new ConnectionFactory() { HostName = Util.ConfigurationHelper.config["RabbitMQHost"] };
+            var factory = new ConnectionFactory() { HostName = Util.ConfigurationHelper.RabbitMQHost };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {

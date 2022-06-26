@@ -28,12 +28,12 @@ namespace BrowserChat.Backend.Core.Util
 
         private static string Encrypt(string str)
         {
-            return BrowserChat.Util.StringCipher.Encrypt(ConfigurationHelper.config.GetValue<string>("EncryptionKey"), str);
+            return BrowserChat.Util.StringCipher.Encrypt(ConfigurationHelper.EncryptionKey, str);
         }
 
         private static string Decrypt(string str)
         {
-            return BrowserChat.Util.StringCipher.Decrypt(ConfigurationHelper.config.GetValue<string>("EncryptionKey"), str);
+            return BrowserChat.Util.StringCipher.Decrypt(ConfigurationHelper.EncryptionKey, str);
         }
     }
 }
