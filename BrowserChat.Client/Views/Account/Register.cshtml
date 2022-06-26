@@ -10,7 +10,7 @@
                     <!-- Name input -->
                     <div class="form-outline mb-4">
                         <label class="form-label" for="registerName">Name</label>
-                        <input type="text" name="Name" class="form-control" />
+                        <input type="text" id="registerName" name="Name" class="form-control" />
                     </div>
 
                     <!-- Surname input -->
@@ -36,6 +36,12 @@
                         <label class="form-label" for="registerPassword">Password</label>
                         <input type="password" name="Password" class="form-control" />
                     </div>
+
+                    <div class="validation-summary-valid" data-valmsg-summary="true">
+                        <span style="color: red;">@ViewBag.errorMessage</span>
+                    </div>
+
+                    <br />
 
                     <!-- Submit button -->
                     <button type="submit" class="btn btn-primary btn-block mb-3">Sign in</button>

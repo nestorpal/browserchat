@@ -35,17 +35,20 @@ namespace BrowserChat.Client.Controllers
         [HttpPost]
         public IActionResult Login(UserLoginDTO login)
         {
-            var user = _securityService.Login(login);
+            if (ModelState.IsValid)
+            {
+                var user = _securityService.Login(login);
 
-            if (string.IsNullOrEmpty(user?.Token))
-            {
-                return RedirectToAction("Login", "Account");
+                if (!string.IsNullOrEmpty(user?.Token))
+                {
+                    _sessionMgr.SetUserSession(user);
+                    return RedirectToAction("Index", "Home");
+                }
             }
-             else
-            {
-                _sessionMgr.SetUserSession(user);
-                return RedirectToAction("Index", "Home");
-            }
+
+            ViewBag.errorMessage = "Incorrect or incomplete data";
+
+            return View(login);
         }
 
         public IActionResult Logout()
@@ -63,12 +66,17 @@ namespace BrowserChat.Client.Controllers
         [HttpPost]
         public IActionResult Register(UserRegisterDTO register)
         {
-            var user = _securityService.Register(register);
-            if (!string.IsNullOrEmpty(user?.Token))
+            if (ModelState.IsValid)
             {
-                _sessionMgr.SetUserSession(user);
-                return RedirectToAction("Index", "Home");
+                var user = _securityService.Register(register);
+                if (!string.IsNullOrEmpty(user?.Token))
+                {
+                    _sessionMgr.SetUserSession(user);
+                    return RedirectToAction("Index", "Home");
+                }
             }
+
+            ViewBag.errorMessage = "Incorrect or incomplete data";
 
             return View();
         }

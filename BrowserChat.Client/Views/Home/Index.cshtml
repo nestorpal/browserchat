@@ -19,7 +19,7 @@
                 @foreach (var item in Model)
                 {
                     <li class="list-group-item" room-id="@item.Id">
-                        <a class="link-primary" onclick="chatManager.AddTab('@item.Id', '@item.Name')">@item.Name</a>
+                        <a class="link-primary" style="cursor: pointer;" onclick="chatManager.AddTab('@item.Id', '@item.Name')">@item.Name</a>
                     </li>
                 }
             </ul>
@@ -72,7 +72,7 @@
     </div>
 </div>
 
-<script src="~/lib//microsoft/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
 <script type="text/javascript">
     var chatManager = {

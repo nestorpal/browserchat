@@ -1,4 +1,6 @@
-﻿@{
+﻿@model BrowserChat.Entity.DTO.UserLoginDTO
+
+@{
     ViewData["Title"] = "Login";
 }
 
@@ -26,7 +28,7 @@
                     <!-- Email input -->
                     <div class="form-outline mb-4">
                         <label class="form-label" for="loginEmail">Email address</label>
-                        <input type="email" name="Email" class="form-control form-control-lg"
+                        <input type="email" id="loginEmail" name="Email" class="form-control form-control-lg"
                             placeholder="Enter a valid email address"
                             value="nestor.panu@gmail.com"/>
                     </div>
@@ -37,6 +39,10 @@
                         <input type="password" name="Password" class="form-control form-control-lg" 
                             placeholder="Enter password"
                             value="Password!123"/>
+                    </div>
+
+                    <div class="validation-summary-valid" data-valmsg-summary="true">
+                        <span style="color: red;">@ViewBag.errorMessage</span>
                     </div>
 
                     <div class="text-center text-lg-start mt-4 pt-2">
