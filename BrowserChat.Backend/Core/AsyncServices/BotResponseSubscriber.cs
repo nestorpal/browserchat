@@ -13,8 +13,8 @@ namespace BrowserChat.Backend.Core.AsyncServices
     {
         private readonly IConfiguration _config;
         private readonly HubHelper _hubHelper;
-        private IConnection _conn;
-        private IModel _channel;
+        private IConnection? _conn;
+        private IModel? _channel;
 
         public BotResponseSubscriber(
             IConfiguration config,
@@ -66,23 +66,32 @@ namespace BrowserChat.Backend.Core.AsyncServices
             consumer.Received += (sender, eventArgs) =>
             {
                 var body = eventArgs.Body;
-                var notificationMessage = Encoding.UTF8.GetString(body.ToArray());
+                string notificationMessage = Encoding.UTF8.GetString(body.ToArray());
 
-                BotResponse response = JsonSerializer.Deserialize<BotResponse>(notificationMessage);
-                Task.Run(
-                    async () =>
-                    {
-                        await _hubHelper.PublishPost(
-                            "bot",
-                            new Entity.DTO.PostPublishDTO
-                            {
-                                Message = response.Message,
-                                RoomId = response.RoomId,
-                                TimeStampStr = DateTime.Now.ToString(Constant.General.ConversionTimeFormat)
-                            }
-                        );
-                    }
-                );
+                BotResponse? response = null;
+                try
+                {
+                    response = JsonSerializer.Deserialize<BotResponse>(notificationMessage);
+                }
+                catch { }
+
+                if (response != null)
+                {
+                    Task.Run(
+                        async () =>
+                        {
+                            await _hubHelper.PublishPost(
+                                Constant.MessagesAndExceptions.Bot.BotName,
+                                new Entity.DTO.PostPublishDTO
+                                {
+                                    Message = response.Message,
+                                    RoomId = response.RoomId,
+                                    TimeStampStr = DateTime.Now.ToString(Constant.General.ConversionTimeFormat)
+                                }
+                            );
+                        }
+                    );
+                }
             };
 
             _channel.BasicConsume(
@@ -100,10 +109,14 @@ namespace BrowserChat.Backend.Core.AsyncServices
 
         public override void Dispose()
         {
-            if (_channel.IsOpen)
+            if (_channel != null
+                && _channel.IsOpen)
             {
                 _channel.Close();
-                _conn.Close();
+                if (_conn != null)
+                {
+                    _conn.Close();
+                }
             }
 
             base.Dispose();

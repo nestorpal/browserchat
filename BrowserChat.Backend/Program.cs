@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 bool isProduction = builder.Environment.IsProduction();
+ConfigurationHelper.Initialize(builder.Configuration);
 
 // Add services to the container.
 
@@ -67,9 +68,7 @@ builder.Services.AddCors(opt =>
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials()
-            .WithOrigins(
-                builder.Configuration.GetSection("ClientDomain")?.GetChildren()?.Select(x => x.Value)?.ToArray()
-            );
+            .WithOrigins(ConfigurationHelper.ClientDomain);
     });
 });
 
@@ -99,7 +98,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-ConfigurationHelper.Initialize(builder.Configuration);
 Persistence.PrepPopulation(app, isProduction);
 
 app.Run();

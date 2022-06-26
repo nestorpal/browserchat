@@ -16,6 +16,8 @@ namespace BrowserChat.Backend.Core.Data
 
         private static void SeedData(BrowserChatDbContext? context, bool isProduction)
         {
+            if (context == null) return;
+
             if (isProduction)
             {
                 Console.WriteLine("--> Attempting to apply migrations...");

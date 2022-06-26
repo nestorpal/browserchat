@@ -7,7 +7,7 @@ namespace BrowserChat.Backend.Core.Data
     {
         public BrowserChatDbContext(DbContextOptions<BrowserChatDbContext> opt) : base(opt)
         {
-            
+
         }
 
         protected override void OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder builder)

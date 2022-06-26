@@ -13,8 +13,8 @@ namespace BrowserChat.Backend.Core.Application
     {
         public class PostPublishRequest : IRequest<OkResult>
         {
-            public string RoomId { get; set; }
-            public string Message { get; set; }
+            public string RoomId { get; set; } = string.Empty;
+            public string Message { get; set; } = string.Empty;
         }
 
         public class OkResult
@@ -50,21 +50,25 @@ namespace BrowserChat.Backend.Core.Application
                     if (IsBotCommand(post.Message, out string command, out string value))
                     {
                         await ProcessBotCommand(command, value, request.RoomId);
+                        return new OkResult();
                     }
                     else
                     {
                         string userName = GetUserSession();
 
-                        post.UserName = userName;
-
-                        _repo.RegisterPost(post);
-                        if (_repo.SaveChanges())
+                        if (!string.IsNullOrEmpty(userName))
                         {
-                            await _hubHelper.PublishPost(userName, _mapper.Map<PostPublishDTO>(post));
+                            post.UserName = userName;
+
+                            _repo.RegisterPost(post);
+                            if (_repo.SaveChanges())
+                            {
+                                await _hubHelper.PublishPost(userName, _mapper.Map<PostPublishDTO>(post));
+                            }
+
+                            return new OkResult();
                         }
                     }
-
-                    return new OkResult();
                 }
 
                 throw new ArgumentNullException();
@@ -72,8 +76,8 @@ namespace BrowserChat.Backend.Core.Application
 
             public string GetUserSession()
             {
-                var userName = _httpAccesor.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == "username")?.Value;
-                return userName;
+                var userName = _httpAccesor.HttpContext?.User?.Claims?.FirstOrDefault(x => x.Type == "username")?.Value;
+                return userName ?? string.Empty ;
             }
 
             private bool IsBotCommand(string message, out string command, out string value)
