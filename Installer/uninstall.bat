@@ -1,0 +1,1 @@
+start kubectl delete services,deployments,pods --all
