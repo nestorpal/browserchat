@@ -1,5 +1,6 @@
 ﻿using BrowserChat.Bot.AsyncServices;
 using BrowserChat.Entity;
+using BrowserChat.Value;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +19,9 @@ namespace BrowserChat.Bot.Application.Strategy
                 new BotResponse
                 {
                     RoomId = request.RoomId,
-                    Message = "Invalid Command",
+                    Message = Constant.MessagesAndExceptions.Bot.Other.InvalidCommand,
                     CommandError = true,
-                    CommandErrorType = Value.BotCommandErrorType.InvalidComand
+                    CommandErrorType = BotCommandErrorType.InvalidComand
                 }
             );
         }

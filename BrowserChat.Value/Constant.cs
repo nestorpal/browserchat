@@ -68,6 +68,11 @@ namespace BrowserChat.Value
                         public static readonly string InvalidValue = "{0} is not a valid value";
                     }
                 }
+
+                public static class Other
+                {
+                    public static readonly string InvalidCommand = "Invalid command";
+                }
             }
 
             public static class Client
