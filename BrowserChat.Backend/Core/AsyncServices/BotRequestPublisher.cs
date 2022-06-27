@@ -10,29 +10,35 @@ namespace BrowserChat.Backend.Core.AsyncServices
     {
         public void Publish(BotRequest request)
         {
-            var factory = new ConnectionFactory() { HostName = Util.ConfigurationHelper.RabbitMQHost };
-            using (var connection = factory.CreateConnection())
+            try
             {
-                using (var channel = connection.CreateModel())
+                var factory = new ConnectionFactory() { HostName = Util.ConfigurationHelper.RabbitMQHost };
+                using (var connection = factory.CreateConnection())
                 {
-                    channel.QueueDeclare(
-                        queue: Constant.QueueService.QueueName.BotRequest,
-                        durable: false,
-                        exclusive: false,
-                        autoDelete: false,
-                        arguments: null
-                    );
+                    using (var channel = connection.CreateModel())
+                    {
+                        channel.QueueDeclare(
+                            queue: Constant.QueueService.QueueName.BotRequest,
+                            durable: false,
+                            exclusive: false,
+                            autoDelete: false,
+                            arguments: null
+                        );
 
-                    var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request));
+                        var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request));
 
-                    channel.BasicPublish(
-                        exchange: string.Empty,
-                        routingKey: Constant.QueueService.QueueName.BotRequest,
-                        basicProperties: null,
-                        body: body
-                    );
+                        channel.BasicPublish(
+                            exchange: string.Empty,
+                            routingKey: Constant.QueueService.QueueName.BotRequest,
+                            basicProperties: null,
+                            body: body
+                        );
+                    }
                 }
             }
+            catch
+            { }
+            
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BrowserChat.Backend.Core.HubConfig;
+using BrowserChat.Backend.Core.Util;
 using BrowserChat.Entity;
 using BrowserChat.Value;
 using RabbitMQ.Client;
@@ -10,16 +11,14 @@ namespace BrowserChat.Backend.Core.AsyncServices
 {
     public class BotResponseSubscriber : BackgroundService
     {
-        private readonly IConfiguration _config;
         private readonly HubHelper _hubHelper;
         private IConnection? _conn;
         private IModel? _channel;
+        private bool connectionSuccess = false;
 
         public BotResponseSubscriber(
-            IConfiguration config,
             HubHelper hubHelper)
         {
-            _config = config;
             _hubHelper = hubHelper;
 
             InitializeRabbitMQ();
@@ -27,77 +26,89 @@ namespace BrowserChat.Backend.Core.AsyncServices
 
         private void InitializeRabbitMQ()
         {
-            var factory = new ConnectionFactory
+            try
             {
-                HostName = _config["RabbitMQHost"],
-                Port = int.Parse(_config["RabbitMQPort"])
-            };
+                var factory = new ConnectionFactory
+                {
+                    HostName = ConfigurationHelper.RabbitMQHost,
+                    Port = int.Parse(ConfigurationHelper.RabbitMQPort)
+                };
 
-            _conn = factory.CreateConnection();
-            _channel = _conn.CreateModel();
-            _channel.ExchangeDeclare(
-                exchange: Constant.QueueService.ConfigurationParams.ExchangeMode,
-                type: ExchangeType.Fanout
-            );
+                _conn = factory.CreateConnection();
+                _channel = _conn.CreateModel();
+                _channel.ExchangeDeclare(
+                    exchange: Constant.QueueService.ConfigurationParams.ExchangeMode,
+                    type: ExchangeType.Fanout
+                );
 
-            _channel.QueueDeclare(
+                _channel.QueueDeclare(
+                        queue: Constant.QueueService.QueueName.BotResponse,
+                        durable: false,
+                        exclusive: false,
+                        autoDelete: false,
+                        arguments: null);
+
+                _channel.QueueBind(
                     queue: Constant.QueueService.QueueName.BotResponse,
-                    durable: false,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null);
+                    exchange: Constant.QueueService.ConfigurationParams.ExchangeMode,
+                    routingKey: string.Empty
+                );
 
-            _channel.QueueBind(
-                queue: Constant.QueueService.QueueName.BotResponse,
-                exchange: Constant.QueueService.ConfigurationParams.ExchangeMode,
-                routingKey: string.Empty
-            );
+                _conn.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
 
-            _conn.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
+                connectionSuccess = true;
+            }
+            catch
+            {
+                connectionSuccess = false;
+            }
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            stoppingToken.ThrowIfCancellationRequested();
-
-            var consumer = new EventingBasicConsumer(_channel);
-
-            consumer.Received += (sender, eventArgs) =>
+            if (connectionSuccess)
             {
-                var body = eventArgs.Body;
-                string notificationMessage = Encoding.UTF8.GetString(body.ToArray());
+                stoppingToken.ThrowIfCancellationRequested();
 
-                BotResponse? response = null;
-                try
+                var consumer = new EventingBasicConsumer(_channel);
+
+                consumer.Received += (sender, eventArgs) =>
                 {
-                    response = JsonSerializer.Deserialize<BotResponse>(notificationMessage);
-                }
-                catch { }
+                    var body = eventArgs.Body;
+                    string notificationMessage = Encoding.UTF8.GetString(body.ToArray());
 
-                if (response != null)
-                {
-                    Task.Run(
-                        async () =>
-                        {
-                            await _hubHelper.PublishPost(
-                                Constant.MessagesAndExceptions.Bot.BotName,
-                                new Entity.DTO.PostPublishDTO
-                                {
-                                    Message = response.Message,
-                                    RoomId = response.RoomId,
-                                    TimeStampStr = DateTime.Now.ToString(Constant.General.ConversionTimeFormat)
-                                }
-                            );
-                        }
-                    );
-                }
-            };
+                    BotResponse? response = null;
+                    try
+                    {
+                        response = JsonSerializer.Deserialize<BotResponse>(notificationMessage);
+                    }
+                    catch { }
 
-            _channel.BasicConsume(
-                queue: Constant.QueueService.QueueName.BotResponse,
-                autoAck: true,
-                consumer: consumer
-            );
+                    if (response != null)
+                    {
+                        Task.Run(
+                            async () =>
+                            {
+                                await _hubHelper.PublishPost(
+                                    Constant.MessagesAndExceptions.Bot.BotName,
+                                    new Entity.DTO.PostPublishDTO
+                                    {
+                                        Message = response.Message,
+                                        RoomId = response.RoomId,
+                                        TimeStampStr = DateTime.Now.ToString(Constant.General.ConversionTimeFormat)
+                                    }
+                                );
+                            }
+                        );
+                    }
+                };
+
+                _channel.BasicConsume(
+                    queue: Constant.QueueService.QueueName.BotResponse,
+                    autoAck: true,
+                    consumer: consumer
+                );
+            }
 
             return Task.CompletedTask;
         }
