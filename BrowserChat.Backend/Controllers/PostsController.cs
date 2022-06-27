@@ -3,6 +3,7 @@ using BrowserChat.Backend.Core.Application;
 using BrowserChat.Backend.Core.Data;
 using BrowserChat.Backend.Core.Util;
 using BrowserChat.Entity.DTO;
+using BrowserChat.Value;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +35,7 @@ namespace BrowserChat.Backend.Controllers
             int roomIdInt = 0;
             if (int.TryParse(General.DecryptStringEncoded(roomId), out roomIdInt))
             {
-                return Ok(_mapper.Map<IEnumerable<PostReadDTO>>(_repo.GetRecentPosts(roomIdInt, 50)));
+                return Ok(_mapper.Map<IEnumerable<PostReadDTO>>(_repo.GetRecentPosts(roomIdInt, Constant.General.MaxPostsPerChatRoom)));
             }
 
             throw new ArgumentException();

@@ -5,6 +5,7 @@
         public static class General
         {
             public static readonly string ConversionTimeFormat = "HH:mm:ss";
+            public static readonly int MaxPostsPerChatRoom = 50;
         }
 
         public static class Samples
