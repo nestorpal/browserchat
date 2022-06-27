@@ -2,6 +2,7 @@ using BrowserChat.Security.Core.Application;
 using BrowserChat.Security.Core.Data;
 using BrowserChat.Security.Core.Entities;
 using BrowserChat.Security.Core.JWTLogic;
+using BrowserChat.Security.Core.Util;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 bool isProduction = builder.Environment.IsProduction();
+ConfigurationHelper.Initialize(builder.Configuration);
 
 // Add services to the container.
 
@@ -25,7 +27,7 @@ builder.Services.AddDbContext<SecurityContext>(opt =>
 {
     if (isProduction)
     {
-        opt.UseSqlServer(builder.Configuration.GetConnectionString("DbConn"));
+        opt.UseSqlServer(ConfigurationHelper.DbConnection);
     }
     else
     {
@@ -47,7 +49,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
-            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JWTKey"))),
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(ConfigurationHelper.JWTKey)),
             ValidateIssuerSigningKey = true,
             ValidateIssuer = false,
             ValidateAudience = false
