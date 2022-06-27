@@ -39,7 +39,8 @@ namespace BrowserChat.Backend.Core.Data
                 context.SaveChanges();
             }
 
-            if (!context.Posts.Any())
+            if (!isProduction
+                && !context.Posts.Any())
             {
                 Random rnd = new Random();
 
