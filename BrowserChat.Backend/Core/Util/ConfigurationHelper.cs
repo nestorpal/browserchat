@@ -33,8 +33,21 @@
             return result.ToArray();
         }
 
+        private static string GetConnectionString(string key)
+        {
+            string result = string.Empty;
+            if (_config != null)
+            {
+                result = _config.GetConnectionString(key);
+            }
+            return result;
+        }
+
+        public static string DbConnection { get { return GetConnectionString("DbConnection"); } }
         public static string RabbitMQHost { get { return GetValue("RabbitMQHost"); } }
+        public static string RabbitMQPort { get { return GetValue("RabbitMQPort"); } }
         public static string[] ClientDomain { get { return GetValues("ClientDomain"); } }
         public static string EncryptionKey { get { return GetValue("EncryptionKey"); } }
+        public static string JWTKey { get { return GetValue("JWTKey"); } }
     }
 }
