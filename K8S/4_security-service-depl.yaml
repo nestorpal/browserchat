@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: security-service-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: security-service
+  template:
+    metadata:
+      labels:
+        app: security-service
+    spec:
+      containers:
+        - name: security-service
+          image: nextordevs/browserchat-security
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: security-service-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: security-service
+  ports:
+    - name: security-service-http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: security-service-https
+      protocol: TCP
+      port: 443
+      targetPort: 443
