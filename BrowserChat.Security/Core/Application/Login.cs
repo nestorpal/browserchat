@@ -12,8 +12,8 @@ namespace BrowserChat.Security.Core.Application
     {
         public class UsuarioLoginCommand : IRequest<UserReadDTO>
         {
-            public string Email { get; set; }
-            public string Password { get; set; }
+            public string Email { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
         }
 
         public class UsuarioLoginHandler : IRequestHandler<UsuarioLoginCommand, UserReadDTO>

@@ -49,8 +49,8 @@ namespace BrowserChat.Security.Core.Application
 
             public string GetUserSession()
             {
-                var userName = _httpAcc.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == "username")?.Value;
-                return userName;
+                var userName = _httpAcc.HttpContext?.User?.Claims?.FirstOrDefault(x => x.Type == "username")?.Value;
+                return userName ?? string.Empty;
             }
         }
     }

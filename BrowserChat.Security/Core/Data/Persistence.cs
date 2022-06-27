@@ -16,36 +16,41 @@ namespace BrowserChat.Security.Core.Data
             }
         }
 
-        private static void Migrate(SecurityContext context, bool isProduction)
+        private static void Migrate(SecurityContext? context, bool isProduction)
         {
-            if (isProduction)
+            if (context != null)
             {
-                Console.WriteLine("--> Attempting to apply migrations...");
-                try
+                if (isProduction)
                 {
-                    context.Database.Migrate();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"--> Could not run migrations: {ex.Message}");
+                    Console.WriteLine("--> Attempting to apply migrations...");
+                    try
+                    {
+                        context.Database.Migrate();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"--> Could not run migrations: {ex.Message}");
+                    }
                 }
             }
         }
 
         private async static Task SeedData(UserManager<User>? usrManager)
         {
-
-            if (!usrManager.Users.Any())
+            if (usrManager != null)
             {
-                var user = new User
+                if (!usrManager.Users.Any())
                 {
-                    Name = Constant.Samples.BaseUser.Name,
-                    Surname = Constant.Samples.BaseUser.Surname,
-                    UserName = Constant.Samples.BaseUser.UserName,
-                    Email = Constant.Samples.BaseUser.Email
-                };
+                    var user = new User
+                    {
+                        Name = Constant.Samples.BaseUser.Name,
+                        Surname = Constant.Samples.BaseUser.Surname,
+                        UserName = Constant.Samples.BaseUser.UserName,
+                        Email = Constant.Samples.BaseUser.Email
+                    };
 
-                await usrManager.CreateAsync(user, Constant.Samples.BaseUser.Password);
+                    await usrManager.CreateAsync(user, Constant.Samples.BaseUser.Password);
+                }
             }
         }
     }
