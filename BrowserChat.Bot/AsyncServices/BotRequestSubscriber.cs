@@ -17,37 +17,48 @@ namespace BrowserChat.Bot.AsyncServices
 
         public async void StartSubscription(CancellationToken stoppingToken, Action<string> methodToExecute)
         {
-            var factory = new ConnectionFactory() { HostName = ConfigurationHelper.RabbitMQHost };
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            retry:
+            try
             {
-                channel.QueueDeclare(
-                    queue: Constant.QueueService.QueueName.BotRequest,
-                    durable: false,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null
-                );
-
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
+                var factory = new ConnectionFactory() { HostName = ConfigurationHelper.RabbitMQHost };
+                using (var connection = factory.CreateConnection())
+                using (var channel = connection.CreateModel())
                 {
-                    var body = ea.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
-                    methodToExecute(message);
-                };
+                    channel.QueueDeclare(
+                        queue: Constant.QueueService.QueueName.BotRequest,
+                        durable: false,
+                        exclusive: false,
+                        autoDelete: false,
+                        arguments: null
+                    );
 
-                channel.BasicConsume(
-                    queue: Constant.QueueService.QueueName.BotRequest,
-                    autoAck: true,
-                    consumer: consumer
-                );
+                    var consumer = new EventingBasicConsumer(channel);
+                    consumer.Received += (model, ea) =>
+                    {
+                        var body = ea.Body.ToArray();
+                        var message = Encoding.UTF8.GetString(body);
+                        methodToExecute(message);
+                    };
 
-                while (!stoppingToken.IsCancellationRequested)
-                {
-                    _logger.LogInformation($"Listening queue {Constant.QueueService.QueueName.BotRequest} at: {DateTimeOffset.Now}");
-                    await Task.Delay(5000, stoppingToken);
+                    channel.BasicConsume(
+                        queue: Constant.QueueService.QueueName.BotRequest,
+                        autoAck: true,
+                        consumer: consumer
+                    );
+
+                    while (!stoppingToken.IsCancellationRequested)
+                    {
+                        _logger.LogInformation($"Listening queue {Constant.QueueService.QueueName.BotRequest} at: {DateTimeOffset.Now}");
+                        await Task.Delay(5000, stoppingToken);
+                    }
                 }
+            }
+            catch
+            {
+                _logger.LogInformation($"Could not stablish connection to {ConfigurationHelper.RabbitMQHost}:{ConfigurationHelper.RabbitMQPort}");
+                _logger.LogInformation("Retrying in 5 seconds...");
+                System.Threading.Thread.Sleep(5000);
+                goto retry;
             }
         }
     }
