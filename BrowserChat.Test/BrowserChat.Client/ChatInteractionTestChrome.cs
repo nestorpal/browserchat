@@ -1,8 +1,7 @@
 ﻿using BrowserChat.Test.BrowserChat.Client.Fixtures;
-using BrowserChat.Value;
 using BrowserChat.Util;
+using BrowserChat.Value;
 using OpenQA.Selenium;
-using Xunit;
 
 namespace BrowserChat.Test.BrowserChat.Client
 {
@@ -35,13 +34,13 @@ namespace BrowserChat.Test.BrowserChat.Client
             TemplateMethod(EncryptRoomId(roomId), postToSend, postToSend);
         }
 
-        [Fact(Skip = "temporarily")]
+        [Fact]
         public void VerifyValidCommandIsProcessed()
         {
             TemplateMethod(DefaultRoom, ValidTestCommand, ValidTestCommandResult);
         }
 
-        [Fact(Skip = "temporarily")]
+        [Fact]
         public void VerifyInvalidCommandIsNotProcessed()
         {
             TemplateMethod(DefaultRoom, InvalidTestCommand, InvalidTestCommandResult);
