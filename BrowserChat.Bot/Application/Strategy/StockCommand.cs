@@ -1,4 +1,5 @@
 ﻿using BrowserChat.Bot.AsyncServices;
+using BrowserChat.Bot.Util;
 using BrowserChat.Entity;
 using BrowserChat.Value;
 using System.Net;
@@ -9,15 +10,13 @@ namespace BrowserChat.Bot.Application.Strategy
 {
     public class StockCommand : CommandBase, ICommandStrategy
     {
-        private readonly IConfiguration _config;
         private string _stockApi = string.Empty;
         private string _stockDataKey = string.Empty;
 
-        public StockCommand(IConfiguration config, BotResponsePublisher publisher) : base(publisher)
+        public StockCommand(BotResponsePublisher publisher) : base(publisher)
         {
-            _config = config;
-            _stockApi = _config.GetSection("StockCommand").GetValue<string>("Api");
-            _stockDataKey = _config.GetSection("StockCommand").GetValue<string>("DataKey").ToLower();
+            _stockApi = ConfigurationHelper.StockCommand_Api;
+            _stockDataKey = ConfigurationHelper.StockCommand_DataKey;
         }
 
         public void ProcessCommand(BotRequest request)

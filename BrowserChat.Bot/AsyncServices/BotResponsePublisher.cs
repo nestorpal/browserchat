@@ -1,4 +1,5 @@
-﻿using BrowserChat.Entity;
+﻿using BrowserChat.Bot.Util;
+using BrowserChat.Entity;
 using BrowserChat.Value;
 using RabbitMQ.Client;
 using System;
@@ -12,18 +13,12 @@ namespace BrowserChat.Bot.AsyncServices
 {
     public class BotResponsePublisher
     {
-        private readonly IConfiguration _config;
         private readonly IConnection _connection;
         private readonly IModel _channel;
 
-        public BotResponsePublisher(IConfiguration config)
-        {
-            _config = config;
-        }
-
         public void Publish(BotResponse request)
         {
-            var factory = new ConnectionFactory() { HostName = _config["RabbitMQHost"] };
+            var factory = new ConnectionFactory() { HostName = ConfigurationHelper.RabbitMQHost };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {

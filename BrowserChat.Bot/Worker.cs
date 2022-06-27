@@ -1,5 +1,6 @@
 using BrowserChat.Bot.Application;
 using BrowserChat.Bot.AsyncServices;
+using BrowserChat.Bot.Util;
 
 namespace BrowserChat.Bot
 {
@@ -11,12 +12,15 @@ namespace BrowserChat.Bot
 
         public Worker(
             ILogger<Worker> logger,
+            IConfiguration config,
             BotRequestSubscriber subscriber,
             Processor processor)
         {
             _logger = logger;
             _subscriber = subscriber;
             _processor = processor;
+
+            ConfigurationHelper.Initialize(config);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

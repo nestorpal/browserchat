@@ -13,12 +13,10 @@ namespace BrowserChat.Bot.Application
 {
     public class Processor
     {
-        private readonly IConfiguration _config;
         private readonly BotResponsePublisher _publisher;
 
-        public Processor(IConfiguration config, BotResponsePublisher publisher)
+        public Processor(BotResponsePublisher publisher)
         {
-            _config = config;
             _publisher = publisher;
         }
 
@@ -35,7 +33,7 @@ namespace BrowserChat.Bot.Application
                     {
                         case BotCommandType.STOCK:
                             {
-                                context.SetStrategy(new StockCommand(_config, _publisher));
+                                context.SetStrategy(new StockCommand(_publisher));
                                 break;
                             }
                     }

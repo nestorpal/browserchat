@@ -6,23 +6,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BrowserChat.Value;
+using BrowserChat.Bot.Util;
 
 namespace BrowserChat.Bot.AsyncServices
 {
     public class BotRequestSubscriber
     {
         private readonly ILogger<Worker> _logger;
-        private readonly IConfiguration _config;
 
-        public BotRequestSubscriber(ILogger<Worker> logger, IConfiguration config)
+        public BotRequestSubscriber(ILogger<Worker> logger)
         {
             _logger = logger;
-            _config = config;
         }
 
         public async void StartSubscription(CancellationToken stoppingToken, Action<string> methodToExecute)
         {
-            var factory = new ConnectionFactory() { HostName = _config["RabbitMQHost"] };
+            var factory = new ConnectionFactory() { HostName = ConfigurationHelper.RabbitMQHost };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
