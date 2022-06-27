@@ -13,9 +13,6 @@ namespace BrowserChat.Bot.AsyncServices
 {
     public class BotResponsePublisher
     {
-        private readonly IConnection _connection;
-        private readonly IModel _channel;
-
         public void Publish(BotResponse request)
         {
             var factory = new ConnectionFactory() { HostName = ConfigurationHelper.RabbitMQHost };

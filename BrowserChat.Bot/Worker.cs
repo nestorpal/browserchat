@@ -25,7 +25,7 @@ namespace BrowserChat.Bot
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Task.Run(() => _subscriber.StartSubscription(stoppingToken, ProcessBotRequest));
+            await Task.Run(() => _subscriber.StartSubscription(stoppingToken, ProcessBotRequest));
         }
 
         private void ProcessBotRequest(string payload)

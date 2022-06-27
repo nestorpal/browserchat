@@ -19,7 +19,7 @@ namespace BrowserChat.Bot.Application.Strategy
             _stockDataKey = ConfigurationHelper.StockCommand_DataKey;
         }
 
-        public void ProcessCommand(BotRequest request)
+        public async void ProcessCommand(BotRequest request)
         {
             bool result = false;
             string resultMessage = string.Empty;
@@ -28,22 +28,27 @@ namespace BrowserChat.Bot.Application.Strategy
             {
                 if (IsValidValue(request.Value))
                 {
-                    string requestUrl = _stockApi.Replace("{stock_code}", request.Value);
+                    string requestUrl = string.Format(ConfigurationHelper.StockCommand_Api, request.Value);
 
-                    var responseStream =
-                        new MemoryStream(
-                            new WebClient().DownloadData(
-                                requestUrl
-                            )
-                        );
+                    string responseContent = string.Empty;
 
-                    string responseContent = Encoding.ASCII.GetString(responseStream.ToArray());
+                    using (HttpClient client = new HttpClient())
+                    {
+                        using (HttpResponseMessage response = await client.GetAsync(requestUrl))
+                        using (Stream streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                        {
+                            StreamReader reader = new StreamReader(streamToReadFrom);
+                            responseContent = reader.ReadToEnd();
+                            reader.Dispose();
+                        }
+                    }
+
                     if (!string.IsNullOrEmpty(responseContent))
                     {
                         List<string> csvHeader = responseContent.Split("\r\n")[0].Split(",").Select(h => h.ToLower()).ToList();
                         List<string> csvValue = responseContent.Split("\r\n")[1].Split(",").ToList();
 
-                        int dataKeyIndex = csvHeader.IndexOf(_stockDataKey);
+                        int dataKeyIndex = csvHeader.IndexOf(_stockDataKey.ToLower());
 
                         if (dataKeyIndex >= 0)
                         {
