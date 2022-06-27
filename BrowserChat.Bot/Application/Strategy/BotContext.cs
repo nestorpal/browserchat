@@ -10,7 +10,7 @@ namespace BrowserChat.Bot.Application.Strategy
 {
     public class BotContext
     {
-        private ICommandStrategy _strategy;
+        private ICommandStrategy? _strategy;
 
         public void SetStrategy(ICommandStrategy strategy)
         {
@@ -19,7 +19,10 @@ namespace BrowserChat.Bot.Application.Strategy
 
         public void ExecuteStrategy(BotRequest request)
         {
-            _strategy.ProcessCommand(request);
+            if (_strategy != null)
+            {
+                _strategy.ProcessCommand(request);
+            }
         }
     }
 }
