@@ -1,4 +1,5 @@
 ﻿using BrowserChat.Client.Core.Session;
+using BrowserChat.Client.Core.Util;
 using BrowserChat.Entity.DTO;
 
 namespace BrowserChat.Client.Core.Services
@@ -7,9 +8,9 @@ namespace BrowserChat.Client.Core.Services
     {
         private readonly HttpClientHelper _clientHelper;
 
-        public RestAPIService(IConfiguration config, SessionManagement sessionMgr)
+        public RestAPIService(SessionManagement sessionMgr)
         {
-            _clientHelper = new HttpClientHelper(config["RestAPIService"], sessionMgr);
+            _clientHelper = new HttpClientHelper(ConfigurationHelper.RestAPIService, sessionMgr);
         }
 
 

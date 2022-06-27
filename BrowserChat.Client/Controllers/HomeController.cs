@@ -1,5 +1,6 @@
 ﻿using BrowserChat.Client.Core.Services;
 using BrowserChat.Client.Core.Session;
+using BrowserChat.Client.Core.Util;
 using BrowserChat.Client.Models;
 using BrowserChat.Entity.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -9,18 +10,15 @@ namespace BrowserChat.Client.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IConfiguration _config;
         private readonly ISecurityService _securityService;
         private readonly IRestAPIService _restApiService;
         private readonly SessionManagement _sessionMgr;
 
         public HomeController(
-            IConfiguration config,
             ISecurityService securityService,
             IRestAPIService restApiService,
             SessionManagement sessionMgr)
         {
-            _config = config;
             _securityService = securityService;
             _restApiService = restApiService;
             _sessionMgr = sessionMgr;
@@ -39,7 +37,7 @@ namespace BrowserChat.Client.Controllers
                 }
                 else
                 {
-                    ViewBag.hubService = _config["HubService"];
+                    ViewBag.hubService = ConfigurationHelper.HubService;
                     List<RoomReadDTO> roomList = _restApiService.GetAllRooms().ToList();
                     return View(roomList);
                 }

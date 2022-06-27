@@ -1,7 +1,9 @@
 using BrowserChat.Client.Core.Services;
 using BrowserChat.Client.Core.Session;
+using BrowserChat.Client.Core.Util;
 
 var builder = WebApplication.CreateBuilder(args);
+ConfigurationHelper.Initialize(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -11,7 +13,6 @@ builder.Services.AddScoped<IRestAPIService, RestAPIService>();
 
 builder.Services.AddDistributedMemoryCache();
 
-//builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped(typeof(SessionManagement));
