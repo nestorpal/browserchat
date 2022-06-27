@@ -27,7 +27,7 @@ namespace BrowserChat.Client.Core.Session
 
         public string GetSessionToken()
         {
-            return _httpAccesor.HttpContext.Session.GetString(_sessionTokenKeyword);
+            return GetString(_sessionTokenKeyword);
         }
 
         public void RemoveUserSession()
@@ -40,7 +40,18 @@ namespace BrowserChat.Client.Core.Session
 
         public bool IsLoggedIn()
         {
-            return _httpAccesor.HttpContext.Session.GetString(_isLoggedInKeyword) == "Y";
+            return GetString(_isLoggedInKeyword) == "Y";
+        }
+
+        private string GetString(string key)
+        {
+            string result = string.Empty;
+            if (_httpAccesor.HttpContext != null
+                && _httpAccesor.HttpContext.Session != null)
+            {
+                result = _httpAccesor.HttpContext.Session.GetString(key) ?? string.Empty;
+            }
+            return result;
         }
     }
 }

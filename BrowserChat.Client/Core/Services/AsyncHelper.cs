@@ -33,7 +33,7 @@
             var oldContext = SynchronizationContext.Current;
             var synch = new ExclusiveSynchronizationContext();
             SynchronizationContext.SetSynchronizationContext(synch);
-            T ret = default;
+            T ret = default(T);
             synch.Post(async _ =>
             {
                 try
@@ -59,7 +59,6 @@
         {
             private bool done;
             public Exception InnerException { get; set; }
-
             readonly AutoResetEvent workItemsWaiting = new AutoResetEvent(false);
             readonly Queue<Tuple<SendOrPostCallback, object>> items =
                 new Queue<Tuple<SendOrPostCallback, object>>();

@@ -8,7 +8,7 @@ namespace BrowserChat.Client.Core.Services
 {
     public class HttpClientHelper
     {
-        private readonly HttpClient _client = null;
+        private readonly HttpClient _client;
         private readonly JsonSerializerOptions _jsonOptions;
 
         public HttpClientHelper(string baseUrl, SessionManagement sessionMgr)
@@ -37,9 +37,9 @@ namespace BrowserChat.Client.Core.Services
 
         public T PostResponse<U, T>(string url, U obj)
         {
-            HttpResponseMessage response = null;
+            HttpResponseMessage response =
+                AsyncHelper.RunSync(() => _client.PostAsync(url, CreateHttpContentJson(obj)));
 
-            response = AsyncHelper.RunSync(() => _client.PostAsync(url, CreateHttpContentJson(obj)));
             response.EnsureSuccessStatusCode();
 
             return CreateResultObject<T>(response);
@@ -47,15 +47,18 @@ namespace BrowserChat.Client.Core.Services
 
         public T GetResponse<U, T>(string url, U obj)
         {
-            HttpResponseMessage response = null;
+            IEnumerable<string> properties = new List<string>();
 
-            var properties = from property in obj.GetType().GetProperties()
+            if (obj != null)
+            {
+                properties = from property in obj.GetType().GetProperties()
                              where property.GetValue(obj, null) != null
-                             select $"{property.Name}={WebUtility.UrlEncode(property.GetValue(obj, null).ToString())}";
+                             select $"{property.Name}={WebUtility.UrlEncode((property.GetValue(obj, null) ?? string.Empty).ToString() )}";
+            }
 
             string queryString = string.Join("&", properties.ToArray());
 
-            response = AsyncHelper.RunSync(() => _client.GetAsync($"{url}?{queryString}"));
+            HttpResponseMessage response = AsyncHelper.RunSync(() => _client.GetAsync($"{url}?{queryString}"));
             response.EnsureSuccessStatusCode();
 
             return CreateResultObject<T>(response);
@@ -63,9 +66,9 @@ namespace BrowserChat.Client.Core.Services
 
         public T PostResponse<T>(string url, List<KeyValuePair<string, string>> data)
         {
-            HttpResponseMessage response = null;
+            HttpResponseMessage response =
+                AsyncHelper.RunSync(() => _client.PostAsync(url, new FormUrlEncodedContent(data)));
 
-            response = AsyncHelper.RunSync(() => _client.PostAsync(url, new FormUrlEncodedContent(data)));
             response.EnsureSuccessStatusCode();
 
             return CreateResultObject<T>(response);
