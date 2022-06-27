@@ -2,6 +2,7 @@
 {
     public enum BotCommandType
     {
-        STOCK
+        STOCK,
+        STOCKCOMPANY
     }
 }

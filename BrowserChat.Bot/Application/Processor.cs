@@ -26,6 +26,11 @@ namespace BrowserChat.Bot.Application
                 {
                     switch (command)
                     {
+                        case BotCommandType.STOCKCOMPANY:
+                            {
+                                context.SetStrategy(new StockCompanyCommand(_publisher));
+                                break;
+                            }
                         case BotCommandType.STOCK:
                             {
                                 context.SetStrategy(new StockCommand(_publisher));

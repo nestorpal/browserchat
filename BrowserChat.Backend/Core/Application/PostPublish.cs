@@ -83,15 +83,15 @@ namespace BrowserChat.Backend.Core.Application
             private bool IsBotCommand(string message, out string command, out string value)
             {
                 bool result = false;
-                command = String.Empty;
-                value = String.Empty;
+                command = string.Empty;
+                value = string.Empty;
 
-                Regex regRule = new Regex("^/([a-zA-Z]+)=(.*)");
+                Regex regRule = new Regex("^/([a-zA-Z]+)=?(.*)");
                 var match = regRule.Match(message);
                 if (match.Success)
                 {
                     command = match.Groups[1].Value;
-                    value = match.Groups[2].Value;
+                    value = match.Groups.Count > 2 ? match.Groups[2].Value : string.Empty;
                     result = true;
                 }
 

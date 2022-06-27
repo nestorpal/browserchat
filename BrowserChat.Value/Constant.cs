@@ -21,6 +21,7 @@
 
             public static readonly List<string> Rooms = new List<string> { "Programming", "Music", "Literature", "Science" };
             public static readonly string MessageTemplate = "Message #";
+            public static readonly List<string> StockCompany = new List<string> { "aapl.us", "tsla.us", "msft.us", "googl.us", "amzn.us", "meta.us" };
         }
 
         public static class QueueService
