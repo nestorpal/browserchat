@@ -11,14 +11,34 @@ namespace BrowserChat.Util
             command = string.Empty;
             value = string.Empty;
 
-            Regex regRule = new Regex("^/([a-zA-Z]+)=?(.*)");
-            var match = regRule.Match(message);
-            if (match.Success)
+            try
             {
-                command = match.Groups[1].Value;
-                value = match.Groups.Count > 2 ? match.Groups[2].Value : string.Empty;
-                result = true;
+                Regex? regRule = null;
+                Match? match = null;
+
+                // command value format
+                regRule = new Regex("^/([a-zA-Z\\s?]+)=(.*)");
+                match = regRule.Match(message);
+                if (match.Success)
+                {
+                    command = match.Groups[^2].Value.Trim();
+                    value = match.Groups.Count > 2 ? ((match.Groups[^1].Value ?? string.Empty).Trim()) : string.Empty;
+                    result = true;
+                    return result;
+                }
+
+                // simple command format
+                regRule = new Regex("^/([a-zA-Z\\s?]+)$");
+                match = regRule.Match(message);
+                if (match.Success)
+                {
+                    command = match.Groups.Values.Where(v => !string.IsNullOrEmpty(v.Value)).Select(v => v.Value).Last();
+                    value = string.Empty;
+                    result = true;
+                    return result;
+                }
             }
+            catch { }
 
             return result;
         }

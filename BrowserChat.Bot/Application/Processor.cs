@@ -22,8 +22,11 @@ namespace BrowserChat.Bot.Application
             {
                 BotContext context = new BotContext();
 
-                if (BrowserChat.Util.Bot.IsValidCommand(request.Command, out BotCommandType command))
+                if (BrowserChat.Util.Bot.IsBotCommand(request.Command, out string verifiedCommand, out string value)
+                    && BrowserChat.Util.Bot.IsValidCommand(verifiedCommand, out BotCommandType command))
                 {
+                    request.Value = value;
+
                     switch (command)
                     {
                         case BotCommandType.STOCKCOMPANY:

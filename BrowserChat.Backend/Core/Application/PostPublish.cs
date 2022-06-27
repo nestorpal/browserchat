@@ -46,11 +46,13 @@ namespace BrowserChat.Backend.Core.Application
                 {
                     var post = _mapper.Map<Post>(request);
 
-                    if (BrowserChat.Util.Bot.IsBotCommand(post.Message, out string command, out string value))
+                    // Possible Bot Command
+                    if (post.Message.StartsWith("/"))
                     {
-                        await ProcessBotCommand(command, value, request.RoomId);
+                        await ProcessBotCommand(post.Message, request.RoomId);
                         return new OkResult();
                     }
+                    // Common Post
                     else
                     {
                         string userName = GetUserSession();
@@ -81,7 +83,6 @@ namespace BrowserChat.Backend.Core.Application
 
             private async Task ProcessBotCommand(
                 string command,
-                string value,
                 string roomId)
             {
                 await Task.Run(() =>
@@ -90,7 +91,6 @@ namespace BrowserChat.Backend.Core.Application
                         new BotRequest
                         {
                             Command = command,
-                            Value = value,
                             RoomId = roomId
                         }
                     );
