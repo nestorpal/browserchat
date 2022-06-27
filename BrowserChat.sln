@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrowserChat.Bot", "BrowserC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrowserChat.Value", "BrowserChat.Value\BrowserChat.Value.csproj", "{A00B39ED-DD61-498D-BF7D-DCBBA01AC0E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Security", "BrowserChat.Security\BrowserChat.Security.csproj", "{FAD1F3BE-40C3-453D-9371-FADEFEEA95AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrowserChat.Security", "BrowserChat.Security\BrowserChat.Security.csproj", "{FAD1F3BE-40C3-453D-9371-FADEFEEA95AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Client", "BrowserChat.Client\BrowserChat.Client.csproj", "{1F2F74FA-11F3-4E52-82CF-F4135DF584AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrowserChat.Client", "BrowserChat.Client\BrowserChat.Client.csproj", "{1F2F74FA-11F3-4E52-82CF-F4135DF584AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserChat.Test", "BrowserChat.Test\BrowserChat.Test.csproj", "{821756DD-A7A5-480C-AA2E-6042909F8047}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{1F2F74FA-11F3-4E52-82CF-F4135DF584AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F2F74FA-11F3-4E52-82CF-F4135DF584AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F2F74FA-11F3-4E52-82CF-F4135DF584AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{821756DD-A7A5-480C-AA2E-6042909F8047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{821756DD-A7A5-480C-AA2E-6042909F8047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{821756DD-A7A5-480C-AA2E-6042909F8047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{821756DD-A7A5-480C-AA2E-6042909F8047}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
