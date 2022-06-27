@@ -57,12 +57,12 @@
                 <div class="col-12 messages" style="height: 100%; overflow-y: scroll; padding: 20px;"></div>
                 <div class="col-12" style="display: flex;">
                     <div class="col-10">
-                        <textarea class="message-area form-control form-control-lg" style="width: 100%;"></textarea>
+                        <input class="message-area form-control form-control-lg" style="width: 100%;" />
                     </div>
                     <div class="col-2">
                         <button class="btn btn-primary" 
                             onclick="chatManager.SendPost($(this).closest('.tab-pane').attr('room-id'))"
-                            style="width: 100%;">
+                            style="width: 100%; height: 100%;">
                             Send
                         </button>
                     </div>
@@ -72,153 +72,171 @@
     </div>
 </div>
 
-<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+@section Scripts 
+{
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
-<script type="text/javascript">
-    var chatManager = {
-        tabarray: [],
-        connection: null,
-        maxPostsPerRoom: parseInt('@BrowserChat.Value.Constant.General.MaxPostsPerChatRoom'),
-        AddTab: function(roomid, roomname) {
-            if (!this.tabarray.includes(roomid)) {
-                chatManager.SelectRoom(roomid, true);
+    <script type="text/javascript">
+        var chatManager = {
+            tabarray: [],
+            connection: null,
+            maxPostsPerRoom: parseInt('@BrowserChat.Value.Constant.General.MaxPostsPerChatRoom'),
+            AddTab: function(roomid, roomname) {
+                if (!this.tabarray.includes(roomid)) {
+                    chatManager.SelectRoom(roomid, true);
 
-                let newTabId = new Date().getTime();
+                    let newTabId = new Date().getTime();
 
-                let tabLi = $('#tab_item_li').clone();
-                tabLi.attr('id', '');
-                tabLi.find('button').attr('id', `room${newTabId}-tab`);
-                tabLi.find('button').attr('room-id', roomid);
-                tabLi.find('button').find('.tab-name').text(roomname);
-                tabLi.find('button').attr('data-bs-target', `#room${newTabId}`);
+                    let tabLi = $('#tab_item_li').clone();
+                    tabLi.attr('id', '');
+                    tabLi.find('button').attr('id', `room${newTabId}-tab`);
+                    tabLi.find('button').attr('room-id', roomid);
+                    tabLi.find('button').find('.tab-name').text(roomname);
+                    tabLi.find('button').attr('data-bs-target', `#room${newTabId}`);
 
-                let tabDiv = $('#tab_item_div').clone();
-                tabDiv.attr('id', '');
-                tabDiv.find('.tab-pane').attr('id', `room${newTabId}`);
-                tabDiv.find('.tab-pane').attr('room-id', roomid);
+                    let tabDiv = $('#tab_item_div').clone();
+                    tabDiv.attr('id', '');
+                    tabDiv.find('.tab-pane').attr('id', `room${newTabId}`);
+                    tabDiv.find('.tab-pane').attr('room-id', roomid);
 
-                $('#myTab').append(tabLi.html());
-                $('#myTabcontainer').append(tabDiv.html());
+                    $('#myTab').append(tabLi.html());
+                    $('#myTabcontainer').append(tabDiv.html());
 
-                chatManager.tabarray.push(roomid);
-                chatManager.FocusTab(roomid);
+                    chatManager.tabarray.push(roomid);
+                    chatManager.FocusTab(roomid);
 
-                chatManager.GetRecentPosts(roomid);
+                    chatManager.GetRecentPosts(roomid);
 
-                if (chatManager.connection == null) {
-                    chatManager.ConfigureConnection().then(() => {
+                    if (chatManager.connection == null) {
+                        chatManager.ConfigureConnection().then(() => {
+                            chatManager.ConnectRoom(roomid);
+                        });
+                    }
+                    else {
                         chatManager.ConnectRoom(roomid);
-                    });
+                    }
                 }
                 else {
-                    chatManager.ConnectRoom(roomid);
+                    chatManager.FocusTab(roomid);
                 }
-            }
-            else {
-                chatManager.FocusTab(roomid);
-            }
-        },
-        SelectRoom: function(roomid, flag) {
-            if (flag) {
-                $(`li.list-group-item[room-id="${roomid}"]`).addClass("active-room");
-            }
-            else {
-                $(`li.list-group-item[room-id="${roomid}"]`).removeClass("active-room");
-            }
-        },
-        FocusTab: function(roomid) {
-            if (this.tabarray.includes(roomid)) {
-                $(`button.nav-link`).removeClass('active');
-                $(`button.nav-link[room-id="${roomid}"]`).addClass('active');
-
-                $(`div.tab-pane`).removeClass('active');
-                $(`div.tab-pane`).removeClass('show');
-                $(`div.tab-pane[room-id="${roomid}"]`).addClass('active show');
-            }
-        },
-        CloseTab: function(control) {
-            let liButton = $(control).closest('.nav-link');
-            let roomId = liButton.attr('room-id');
-
-            liButton.closest('.nav-item').remove();
-            $(`div.tab-pane[room-id="${roomId}"]`).remove();
-
-            chatManager.SelectRoom(roomId, false);
-            chatManager.DisconnectRoom(roomId);
-
-            chatManager.tabarray = chatManager.tabarray.filter(tab => tab != roomId);
-            if (!$('.nav-link.active').length) {
-                let newRoomId = chatManager.tabarray[chatManager.tabarray.length - 1];
-                chatManager.FocusTab(newRoomId);
-            }
-        },
-        GetRecentPosts: function(roomid) {
-            $.ajax({
-                url: "/Home/GetRecentPosts",
-                data: { room: roomid },
-                type: "GET",
-                success: function(data) {
-                    $.each(data, function(key, value ) {
-                        chatManager.DisplayPost(value);
-                    });
-                },
-                error: function() {
-
+            },
+            SelectRoom: function(roomid, flag) {
+                if (flag) {
+                    $(`li.list-group-item[room-id="${roomid}"]`).addClass("active-room");
                 }
-            });
-        },
-        SendPost: function(roomid) {
-            let textArea = $(`#myTabcontainer .tab-pane[room-id="${roomid}"] textarea`); 
-            let message = textArea.val();
+                else {
+                    $(`li.list-group-item[room-id="${roomid}"]`).removeClass("active-room");
+                }
+            },
+            FocusTab: function(roomid) {
+                if (this.tabarray.includes(roomid)) {
+                    $(`button.nav-link`).removeClass('active');
+                    $(`button.nav-link[room-id="${roomid}"]`).addClass('active');
 
-            if (message) {
+                    $(`div.tab-pane`).removeClass('active');
+                    $(`div.tab-pane`).removeClass('show');
+                    $(`div.tab-pane[room-id="${roomid}"]`).addClass('active show');
+
+                    chatManager.FocusPostInput(roomid);
+                }
+            },
+            FocusPostInput: function(roomid) {
+                $(`#myTabcontainer .tab-pane[room-id="${roomid}"] .message-area`).focus();
+            },
+            CloseTab: function(control) {
+                let liButton = $(control).closest('.nav-link');
+                let roomId = liButton.attr('room-id');
+
+                liButton.closest('.nav-item').remove();
+                $(`div.tab-pane[room-id="${roomId}"]`).remove();
+
+                chatManager.SelectRoom(roomId, false);
+                chatManager.DisconnectRoom(roomId);
+
+                chatManager.tabarray = chatManager.tabarray.filter(tab => tab != roomId);
+                if (!$('.nav-link.active').length) {
+                    let newRoomId = chatManager.tabarray[chatManager.tabarray.length - 1];
+                    chatManager.FocusTab(newRoomId);
+                }
+            },
+            GetRecentPosts: function(roomid) {
                 $.ajax({
-                    url: "/Home/PublishPost",
-                    data: { roomId: roomid, message: encodeURIComponent(message) },
-                    type: "POST",
+                    url: "/Home/GetRecentPosts",
+                    data: { room: roomid },
+                    type: "GET",
                     success: function(data) {
+                        $.each(data, function(key, value ) {
+                            chatManager.DisplayPost(value);
+                        });
                     },
                     error: function() {
                     }
                 });
+            },
+            SendPost: function(roomid) {
+                let postInput = $(`#myTabcontainer .tab-pane[room-id="${roomid}"] .message-area`); 
+                let message = postInput.val();
 
-                textArea.val('');
-                textArea.text('');
-            }
-        },
-        DisplayPost: function(post) {            
-            let target = $(`#myTabcontainer .tab-pane[room-id="${post.roomId}"] .messages`);
+                if (message) {
+                    $.ajax({
+                        url: "/Home/PublishPost",
+                        data: { roomId: roomid, message: encodeURIComponent(message) },
+                        type: "POST",
+                        success: function(data) {
+                        },
+                        error: function() {
+                        }
+                    });
 
-            target.append(
-                `<span><b>[${post.timeStampStr}] ${post.userName}</b>: ${post.message}</span><br/>`
-            );
+                    postInput.val('');
+                    postInput.text('');
+                }
+            },
+            DisplayPost: function(post) {            
+                let target = $(`#myTabcontainer .tab-pane[room-id="${post.roomId}"] .messages`);
 
-            target.scrollTop(target.height());
+                target.append(
+                    `<span><b>[${post.timeStampStr}] ${post.userName}</b>: ${post.message}</span><br/>`
+                );
 
-            chatManager.EvaluateRoomPostNumber(post.roomId);
-        },
-        EvaluateRoomPostNumber: function(roomId) {
-            let target = $(`#myTabcontainer .tab-pane[room-id="${roomId}"] .messages span`);
-            if (target.length > chatManager.maxPostsPerRoom) {
-                target.first().remove();
-            }
-        },
-        ConfigureConnection: () => new Promise((resolve, reject) => {
-            chatManager.connection = new signalR.HubConnectionBuilder().withUrl("@ViewBag.hubService").build();
+                target.scrollTop(target.height());
 
-            chatManager.connection.start().then(() => {
-                chatManager.connection.on("ReceiveMessage", (roomId, user, message, timestamp) => {
-                    chatManager.DisplayPost({ roomId: roomId, userName: user, message: message, timeStampStr: timestamp });
+                chatManager.EvaluateRoomPostNumber(post.roomId);
+            },
+            EvaluateRoomPostNumber: function(roomId) {
+                let target = $(`#myTabcontainer .tab-pane[room-id="${roomId}"] .messages span`);
+                if (target.length > chatManager.maxPostsPerRoom) {
+                    target.first().remove();
+                }
+            },
+            ConfigureConnection: () => new Promise((resolve, reject) => {
+                chatManager.connection = new signalR.HubConnectionBuilder().withUrl("@ViewBag.hubService").build();
+
+                chatManager.connection.start().then(() => {
+                    chatManager.connection.on("@BrowserChat.Value.Constant.HubService.Events.ReceiveMessage", (roomId, user, message, timestamp) => {
+                        chatManager.DisplayPost({ roomId: roomId, userName: user, message: message, timeStampStr: timestamp });
+                    });
+
+                    resolve();
                 });
-
-                resolve();
-            });
-        }),
-        ConnectRoom: function(roomid) {
-            chatManager.connection.invoke("AddToRoom", roomid);
-        },
-        DisconnectRoom: function(roomid) {
-            chatManager.connection.invoke("RemoveFromRoom", roomid);
+            }),
+            ConnectRoom: function(roomid) {
+                chatManager.connection.invoke("@BrowserChat.Value.Constant.HubService.Events.AddToRoom", roomid);
+            },
+            DisconnectRoom: function(roomid) {
+                chatManager.connection.invoke("@BrowserChat.Value.Constant.HubService.Events.RemoveFromRoom", roomid);
+            }
         }
-    }
-</script>
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#myTabcontainer').on('keypress', '.message-area', function(event) {
+                let keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode == '13'){
+                    $(this).closest('.tab-pane').find('button').trigger('click');
+                }
+            });
+        });
+    </script>
+}
