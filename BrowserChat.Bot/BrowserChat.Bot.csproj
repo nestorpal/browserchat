@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BrowserChat.Entity\BrowserChat.Entity.csproj" />
+    <ProjectReference Include="..\BrowserChat.Util\BrowserChat.Util.csproj" />
     <ProjectReference Include="..\BrowserChat.Value\BrowserChat.Value.csproj" />
   </ItemGroup>
 </Project>

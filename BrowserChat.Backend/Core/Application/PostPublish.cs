@@ -5,7 +5,6 @@ using BrowserChat.Backend.Core.HubConfig;
 using BrowserChat.Entity;
 using BrowserChat.Entity.DTO;
 using MediatR;
-using System.Text.RegularExpressions;
 
 namespace BrowserChat.Backend.Core.Application
 {
@@ -47,7 +46,7 @@ namespace BrowserChat.Backend.Core.Application
                 {
                     var post = _mapper.Map<Post>(request);
 
-                    if (IsBotCommand(post.Message, out string command, out string value))
+                    if (BrowserChat.Util.Bot.IsBotCommand(post.Message, out string command, out string value))
                     {
                         await ProcessBotCommand(command, value, request.RoomId);
                         return new OkResult();
@@ -78,24 +77,6 @@ namespace BrowserChat.Backend.Core.Application
             {
                 var userName = _httpAccesor.HttpContext?.User?.Claims?.FirstOrDefault(x => x.Type == "username")?.Value;
                 return userName ?? string.Empty ;
-            }
-
-            private bool IsBotCommand(string message, out string command, out string value)
-            {
-                bool result = false;
-                command = string.Empty;
-                value = string.Empty;
-
-                Regex regRule = new Regex("^/([a-zA-Z]+)=?(.*)");
-                var match = regRule.Match(message);
-                if (match.Success)
-                {
-                    command = match.Groups[1].Value;
-                    value = match.Groups.Count > 2 ? match.Groups[2].Value : string.Empty;
-                    result = true;
-                }
-
-                return result;
             }
 
             private async Task ProcessBotCommand(

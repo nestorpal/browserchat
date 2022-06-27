@@ -22,7 +22,7 @@ namespace BrowserChat.Bot.Application
             {
                 BotContext context = new BotContext();
 
-                if (ValidateCommand(request.Command, out BotCommandType command))
+                if (BrowserChat.Util.Bot.IsValidCommand(request.Command, out BotCommandType command))
                 {
                     switch (command)
                     {
@@ -45,24 +45,6 @@ namespace BrowserChat.Bot.Application
 
                 context.ExecuteStrategy(request);
             }
-        }
-
-        private bool ValidateCommand(string commandName, out BotCommandType command)
-        {
-            bool result = false;
-            command = 0;
-            try
-            {
-                command = (BotCommandType)(int)Enum.Parse(typeof(BotCommandType), PreProcessCommandString(commandName));
-                result = true;
-            }
-            catch { }
-            return result;
-        }
-
-        private string PreProcessCommandString(string commandName)
-        {
-            return commandName.Trim().ToUpper();
         }
     }
 }
