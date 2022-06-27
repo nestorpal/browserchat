@@ -78,6 +78,7 @@
     var chatManager = {
         tabarray: [],
         connection: null,
+        maxPostsPerRoom: parseInt('@BrowserChat.Value.Constant.General.MaxPostsPerChatRoom'),
         AddTab: function(roomid, roomname) {
             if (!this.tabarray.includes(roomid)) {
                 chatManager.SelectRoom(roomid, true);
@@ -193,6 +194,14 @@
             );
 
             target.scrollTop(target.height());
+
+            chatManager.EvaluateRoomPostNumber(post.roomId);
+        },
+        EvaluateRoomPostNumber: function(roomId) {
+            let target = $(`#myTabcontainer .tab-pane[room-id="${roomId}"] .messages span`);
+            if (target.length > chatManager.maxPostsPerRoom) {
+                target.first().remove();
+            }
         },
         ConfigureConnection: () => new Promise((resolve, reject) => {
             chatManager.connection = new signalR.HubConnectionBuilder().withUrl("@ViewBag.hubService").build();
