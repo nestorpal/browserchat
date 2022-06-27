@@ -1,5 +1,4 @@
 ﻿using BrowserChat.Entity;
-using BrowserChat.Value;
 
 namespace BrowserChat.Bot.Application.Strategy
 {

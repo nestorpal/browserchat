@@ -1,7 +1,6 @@
 ﻿using BrowserChat.Backend.Core.HubConfig;
 using BrowserChat.Entity;
 using BrowserChat.Value;
-using Microsoft.AspNetCore.SignalR;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;

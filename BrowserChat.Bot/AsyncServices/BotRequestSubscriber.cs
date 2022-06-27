@@ -1,12 +1,8 @@
-﻿using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BrowserChat.Bot.Util;
 using BrowserChat.Value;
-using BrowserChat.Bot.Util;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System.Text;
 
 namespace BrowserChat.Bot.AsyncServices
 {

@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
+using BrowserChat.Backend.Core.Application;
 using BrowserChat.Backend.Core.Data;
-using BrowserChat.Backend.Core.HubConfig;
 using BrowserChat.Backend.Core.Util;
-using BrowserChat.Entity;
 using BrowserChat.Entity.DTO;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using BrowserChat.Backend.Core.Application;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BrowserChat.Backend.Controllers
 {

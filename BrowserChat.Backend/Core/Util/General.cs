@@ -1,6 +1,4 @@
-﻿using BrowserChat.Util;
-
-namespace BrowserChat.Backend.Core.Util
+﻿namespace BrowserChat.Backend.Core.Util
 {
     public static class General
     {

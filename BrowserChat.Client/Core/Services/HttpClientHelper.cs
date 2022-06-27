@@ -1,8 +1,7 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Text.Json;
+﻿using BrowserChat.Client.Core.Session;
+using System.Net;
 using System.Text;
-using BrowserChat.Client.Core.Session;
+using System.Text.Json;
 
 namespace BrowserChat.Client.Core.Services
 {

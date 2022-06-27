@@ -22,14 +22,12 @@ namespace BrowserChat.Security.Core.Data
             {
                 if (isProduction)
                 {
-                    Console.WriteLine("--> Attempting to apply migrations...");
                     try
                     {
                         context.Database.Migrate();
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"--> Could not run migrations: {ex.Message}");
                     }
                 }
             }

@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using BrowserChat.Entity;
+﻿using BrowserChat.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BrowserChat.Backend.Core.Data
 {

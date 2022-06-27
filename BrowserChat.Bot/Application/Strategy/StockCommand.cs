@@ -2,8 +2,6 @@
 using BrowserChat.Bot.Util;
 using BrowserChat.Entity;
 using BrowserChat.Value;
-using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace BrowserChat.Bot.Application.Strategy

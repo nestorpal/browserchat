@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using BrowserChat.Entity;
+﻿using BrowserChat.Entity;
 using BrowserChat.Value;
+using Microsoft.EntityFrameworkCore;
 
 namespace BrowserChat.Backend.Core.Data
 {
@@ -20,14 +20,12 @@ namespace BrowserChat.Backend.Core.Data
 
             if (isProduction)
             {
-                Console.WriteLine("--> Attempting to apply migrations...");
                 try
                 {
                     context.Database.Migrate();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"--> Could not run migrations: {ex.Message}");
                 }
             }
 
