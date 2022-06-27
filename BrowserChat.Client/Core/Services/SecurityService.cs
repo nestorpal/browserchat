@@ -13,20 +13,46 @@ namespace BrowserChat.Client.Core.Services
             _clientHelper = new HttpClientHelper(ConfigurationHelper.SecurityService, sessionMgr);
         }
 
-
         public UserReadDTO Login(UserLoginDTO login)
         {
-            return _clientHelper.PostResponse<UserLoginDTO, UserReadDTO>("user/login", login);
+            UserReadDTO result;
+            try
+            {
+                result = _clientHelper.PostResponse<UserLoginDTO, UserReadDTO>("user/login", login);
+            }
+            catch
+            {
+                result = new UserReadDTO { Token = string.Empty };
+            }
+            return result;
         }
 
         public UserReadDTO ValidateSession()
         {
-            return _clientHelper.GetResponse<object, UserReadDTO>("user", new { });
+            UserReadDTO result;
+            try
+            {
+                result  = _clientHelper.GetResponse<object, UserReadDTO>("user", new { });
+            }
+            catch
+            {
+                result = new UserReadDTO { Token = string.Empty };
+            }
+            return result;
         }
 
         public UserReadDTO Register(UserRegisterDTO register)
         {
-            return _clientHelper.PostResponse<UserRegisterDTO, UserReadDTO>("user/register", register);
+            UserReadDTO result;
+            try
+            {
+                result = _clientHelper.PostResponse<UserRegisterDTO, UserReadDTO>("user/register", register);
+            }
+            catch
+            {
+                result = new UserReadDTO { Token = string.Empty };
+            }
+            return result;
         }
     }
 }

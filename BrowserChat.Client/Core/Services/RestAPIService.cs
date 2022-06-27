@@ -13,7 +13,6 @@ namespace BrowserChat.Client.Core.Services
             _clientHelper = new HttpClientHelper(ConfigurationHelper.RestAPIService, sessionMgr);
         }
 
-
         public IEnumerable<RoomReadDTO> GetAllRooms()
         {
             return _clientHelper.GetResponse<object, IEnumerable<RoomReadDTO>>("chat/rooms", new { });
