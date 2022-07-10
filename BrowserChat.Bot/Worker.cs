@@ -11,11 +11,9 @@ namespace BrowserChat.Bot
 
         public Worker(
             IServiceProvider serviceProvider,
-            ILogger<Worker> logger,
-            IConfiguration config)
+            ILogger<Worker> logger)
         {
             _logger = logger;
-            ConfigurationHelper.Initialize(config);
             ServiceCollectionHelper.Initialize(serviceProvider);
         }
 

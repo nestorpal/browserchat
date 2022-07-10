@@ -1,11 +1,14 @@
 using BrowserChat.Bot;
 using BrowserChat.Bot.Application;
 using BrowserChat.Bot.AsyncServices;
+using BrowserChat.Bot.Util;
 using MassTransit;
 
 IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services =>
+    .ConfigureServices((hostContext, services) =>
     {
+        ConfigurationHelper.Initialize(hostContext.Configuration);
+
         services.AddTransient(typeof(Processor));
         services.AddTransient(typeof(BotResponsePublisher));
 
@@ -13,7 +16,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         {
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host(BrowserChat.Bot.Util.ConfigurationHelper.RabbitMQHost, "/");
+                cfg.Host(ConfigurationHelper.RabbitMQHost, "/");
 
                 cfg.ReceiveEndpoint(BrowserChat.Value.Constant.QueueService.QueueName.BotRequest, e =>
                 {
