@@ -2,6 +2,11 @@
 using BrowserChat.Bot.Util;
 using BrowserChat.Entity;
 using BrowserChat.Value;
+using CsvHelper;
+using CsvHelper.Configuration;
+using System.Dynamic;
+using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace BrowserChat.Bot.Application.Strategy
@@ -26,39 +31,21 @@ namespace BrowserChat.Bot.Application.Strategy
             {
                 if (IsValidValue(request.Value))
                 {
-                    string requestUrl = string.Format(ConfigurationHelper.StockCommand_Api, request.Value);
+                    string response = await GetStockByCompanyCode(request.Value);
 
-                    string responseContent = string.Empty;
-
-                    using (HttpClient client = new HttpClient())
+                    if (!string.IsNullOrEmpty(response))
                     {
-                        using (HttpResponseMessage response = await client.GetAsync(requestUrl))
-                        using (Stream streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                        string stockValueStr = GetValueFromCSVContent(response, _stockDataKey);
+
+                        if (!string.IsNullOrEmpty(stockValueStr))
                         {
-                            StreamReader reader = new StreamReader(streamToReadFrom);
-                            responseContent = reader.ReadToEnd();
-                            reader.Dispose();
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(responseContent))
-                    {
-                        List<string> csvHeader = responseContent.Split("\r\n")[0].Split(",").Select(h => h.ToLower()).ToList();
-                        List<string> csvValue = responseContent.Split("\r\n")[1].Split(",").ToList();
-
-                        int dataKeyIndex = csvHeader.IndexOf(_stockDataKey.ToLower());
-
-                        if (dataKeyIndex >= 0)
-                        {
-                            string stockValueStr = csvValue[dataKeyIndex];
-
                             if (IsValidNumber(stockValueStr))
                             {
                                 resultMessage =
                                     string.Format(
                                         Constant.MessagesAndExceptions.Bot.Command.Stock.ValidResult,
                                         request.Value.ToUpper(),
-                                        csvValue[dataKeyIndex]
+                                        stockValueStr
                                     );
 
                                 result = true;
@@ -122,6 +109,71 @@ namespace BrowserChat.Bot.Application.Strategy
         {
             Regex regex = new Regex("^[a-zA-Z]+\\.[a-zA-Z]+$");
             return regex.Match(value).Success;
+        }
+
+        private async Task<string> GetStockByCompanyCode(string companyCode)
+        {
+            string result = string.Empty;
+
+            using (HttpClient client = new HttpClient())
+            {
+                using (HttpResponseMessage response = await client.GetAsync(string.Format(_stockApi, companyCode)))
+                using (Stream streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                {
+                    StreamReader reader = new StreamReader(streamToReadFrom);
+                    result = reader.ReadToEnd();
+                    reader.Dispose();
+                }
+            }
+
+            return result;
+        }
+
+        private string GetValueFromCSVContent(string content, string property)
+        {
+            dynamic record;
+            string? result = string.Empty;
+            property = property.ToLower();
+
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                PrepareHeaderForMatch = args => args.Header.ToLower()
+            };
+
+            using (var reader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(content))))
+            using (var csv = new CsvReader(reader, config))
+            {
+                csv.Read();
+                record = csv.GetRecord<dynamic>();
+            }
+
+            if ((object)record != null)
+            {
+                object? propertyValue = default;
+                if (DynamicHasProperty(record, property, out propertyValue))
+                {
+                    result = propertyValue?.ToString();
+                }
+            }
+
+            return result ?? string.Empty;
+        }
+
+        private bool DynamicHasProperty(dynamic item, string propertyName, out object? propertyValue)
+        {
+            bool exists = false;
+
+            if (item is ExpandoObject eo)
+            {
+                exists = (eo as IDictionary<string, object>).TryGetValue(propertyName, out propertyValue);
+            }
+            else
+            {
+                propertyValue = item.GetType().GetProperty(propertyName);
+                exists = propertyValue != null;
+            }
+
+            return exists;
         }
     }
 }
