@@ -24,17 +24,20 @@ namespace BrowserChat.Backend.Core.Application
         public class PostPublishHandler : IRequestHandler<PostPublishRequest, OkResult>
         {
             private readonly HubHelper _hubHelper;
+            private readonly BotRequestPublisher _botRequestPublisher;
             private readonly IMapper _mapper;
             private readonly IBrowserChatRepository _repo;
             private readonly IHttpContextAccessor _httpAccesor;
 
             public PostPublishHandler(
                 HubHelper hubHelper,
+                BotRequestPublisher botRequestPublisher,
                 IMapper mapper,
                 IBrowserChatRepository repo,
                 IHttpContextAccessor httpAccesor)
             {
                 _hubHelper = hubHelper;
+                _botRequestPublisher = botRequestPublisher;
                 _mapper = mapper;
                 _repo = repo;
                 _httpAccesor = httpAccesor;
@@ -87,7 +90,7 @@ namespace BrowserChat.Backend.Core.Application
             {
                 await Task.Run(() =>
                 {
-                    new BotRequestPublisher().Publish(
+                    _botRequestPublisher.Publish(
                         new BotRequest
                         {
                             Command = command,

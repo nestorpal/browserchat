@@ -2,6 +2,7 @@ using BrowserChat.Backend.Core.AsyncServices;
 using BrowserChat.Backend.Core.Data;
 using BrowserChat.Backend.Core.HubConfig;
 using BrowserChat.Backend.Core.Util;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -52,7 +53,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-builder.Services.AddHostedService<BotResponseSubscriber>();
+/* MassTransit RabbitMq */
+/**************/
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(ConfigurationHelper.RabbitMQHost, "/");
+
+        cfg.ReceiveEndpoint(BrowserChat.Value.Constant.QueueService.QueueName.BotResponse, e =>
+        {
+            e.Durable = true;
+            e.Consumer<BotResponseConsumer>();
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
+builder.Services.AddSingleton(typeof(BotRequestPublisher));
+/**************/
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -80,6 +100,9 @@ builder.Services.AddSingleton(typeof(HubHelper));
 
 var app = builder.Build();
 
+ServiceCollectionHelper.Initialize(app);
+Persistence.PrepPopulation(app, isProduction);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -96,7 +119,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-Persistence.PrepPopulation(app, isProduction);
 
 app.Run();
