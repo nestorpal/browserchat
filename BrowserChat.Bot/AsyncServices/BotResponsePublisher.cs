@@ -1,6 +1,7 @@
 ﻿using BrowserChat.Bot.Util;
 using BrowserChat.Entity;
 using BrowserChat.Value;
+using MassTransit;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
@@ -9,31 +10,21 @@ namespace BrowserChat.Bot.AsyncServices
 {
     public class BotResponsePublisher
     {
-        public void Publish(BotResponse request)
+        private readonly IBus _bus;
+
+        public BotResponsePublisher(IBus bus)
         {
-            var factory = new ConnectionFactory() { HostName = ConfigurationHelper.RabbitMQHost };
-            using (var connection = factory.CreateConnection())
-            {
-                using (var channel = connection.CreateModel())
-                {
-                    channel.QueueDeclare(
-                        queue: Constant.QueueService.QueueName.BotResponse,
-                        durable: false,
-                        exclusive: false,
-                        autoDelete: false,
-                        arguments: null
-                    );
+            _bus = bus;
+        }
 
-                    var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request));
+        public async void Publish(BotResponse response)
+        {
+            var endpoint =
+                await _bus.GetSendEndpoint(
+                    new Uri($"queue:{BrowserChat.Value.Constant.QueueService.QueueName.BotResponse}")
+                );
 
-                    channel.BasicPublish(
-                        exchange: string.Empty,
-                        routingKey: Constant.QueueService.QueueName.BotResponse,
-                        basicProperties: null,
-                        body: body
-                    );
-                }
-            }
+            await endpoint.Send(response);
         }
     }
 }

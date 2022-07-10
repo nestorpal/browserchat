@@ -49,5 +49,39 @@ namespace BrowserChat.Bot.Application
                 context.ExecuteStrategy(request);
             }
         }
+
+        public void Process(BotRequest request)
+        {
+            if (request != null)
+            {
+                BotContext context = new BotContext();
+
+                if (BrowserChat.Util.Bot.IsBotCommand(request.Command, out string verifiedCommand, out string value)
+                    && BrowserChat.Util.Bot.IsValidCommand(verifiedCommand, out BotCommandType command))
+                {
+                    request.Value = value;
+
+                    switch (command)
+                    {
+                        case BotCommandType.STOCKCOMPANY:
+                            {
+                                context.SetStrategy(new StockCompanyCommand(_publisher));
+                                break;
+                            }
+                        case BotCommandType.STOCK:
+                            {
+                                context.SetStrategy(new StockCommand(_publisher));
+                                break;
+                            }
+                    }
+                }
+                else
+                {
+                    context.SetStrategy(new InvalidCommand(_publisher));
+                }
+
+                context.ExecuteStrategy(request);
+            }
+        }
     }
 }

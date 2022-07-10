@@ -1,36 +1,31 @@
 using BrowserChat.Bot.Application;
 using BrowserChat.Bot.AsyncServices;
 using BrowserChat.Bot.Util;
+using BrowserChat.Value;
 
 namespace BrowserChat.Bot
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly BotRequestSubscriber _subscriber;
-        private readonly Processor _processor;
 
         public Worker(
+            IServiceProvider serviceProvider,
             ILogger<Worker> logger,
-            IConfiguration config,
-            BotRequestSubscriber subscriber,
-            Processor processor)
+            IConfiguration config)
         {
             _logger = logger;
-            _subscriber = subscriber;
-            _processor = processor;
-
             ConfigurationHelper.Initialize(config);
+            ServiceCollectionHelper.Initialize(serviceProvider);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await Task.Run(() => _subscriber.StartSubscription(stoppingToken, ProcessBotRequest));
-        }
-
-        private void ProcessBotRequest(string payload)
-        {
-            _processor.Process(payload);
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                await Task.Delay(5000, stoppingToken);
+            }
         }
     }
 }
