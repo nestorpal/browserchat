@@ -1,7 +1,7 @@
 ﻿using BrowserChat.Backend.Core.HubConfig;
 using BrowserChat.Backend.Core.Util;
-using BrowserChat.Value;
 using BrowserChat.Entity;
+using BrowserChat.Value;
 using MassTransit;
 
 namespace BrowserChat.Backend.Core.AsyncServices

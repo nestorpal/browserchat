@@ -1,9 +1,5 @@
 ﻿using BrowserChat.Entity;
-using BrowserChat.Value;
 using MassTransit;
-using RabbitMQ.Client;
-using System.Text;
-using System.Text.Json;
 
 namespace BrowserChat.Backend.Core.AsyncServices
 {
