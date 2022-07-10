@@ -21,13 +21,17 @@ Browser Chat uses the following frameworks, technologies and libraries:
 - [ASP.NET Core 6.0] - For Rest API Services and MVC based web system
 - [SignalR] - For WebSocket based message delivery
 - [RabbitMQ] - For handling command requests between Rest API and a decoupled bot
+- [MassTransit RabbitMQ] - For abstracting RabbitMQ underlying logic
 - [AutoMapper] - For mapping internal structures into external models
 - [MediatR] - For simplifying Rest API Controllers with mediator design pattern
 - [JSON Web Token] - For restricting access and interactions with the system only for users correctly logged in
+- [CSVHelper] - For parsing CSV content
 
 ## Installation
 
 The installation is based on Kubernetes Deployment so it **requires Docker platform installed with Kubernetes enabled**.
+
+> For detailed instructions on how to enable Kubernetes, use the following address: https://docs.docker.com/desktop/kubernetes/
 
 After the required software is implemented go to the Install directory and run the install.bat file. This will install the following components:
 
