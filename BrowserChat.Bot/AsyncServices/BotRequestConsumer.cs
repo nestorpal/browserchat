@@ -14,9 +14,9 @@ namespace BrowserChat.Bot.AsyncServices
     {
         public Task Consume(ConsumeContext<BotRequest> context)
         {
-            if (ServiceCollectionHelper._provider != null)
+            if (ServiceCollectionHelper.Provider != null)
             {
-                using (var scope = ServiceCollectionHelper._provider.CreateScope())
+                using (var scope = ServiceCollectionHelper.Provider.CreateScope())
                 {
                     scope.ServiceProvider.GetService<Processor>()?.Process(context.Message);
                 }

@@ -8,12 +8,11 @@ namespace BrowserChat.Bot.Util
 {
     public class ServiceCollectionHelper
     {
-        public static IServiceProvider? _provider;
+        public static IServiceProvider? Provider;
 
         public static void Initialize(IServiceProvider provider)
         {
-            _provider = provider;
+            Provider = provider;
         }
-
     }
 }
