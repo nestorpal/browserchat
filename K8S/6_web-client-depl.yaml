@@ -15,6 +15,7 @@ spec:
       containers:
         - name: web-client
           image: nextordevs/browserchat-client:net10
+          imagePullPolicy: Always
 ---
 apiVersion: v1
 kind: Service
@@ -27,8 +28,8 @@ spec:
   ports:
     - name: web-client-http
       protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 8080
+      targetPort: 8080
     - name: web-client-https
       protocol: TCP
       port: 443
@@ -45,8 +46,8 @@ spec:
   ports:
     - name: web-client-http
       protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 8080
+      targetPort: 8080
       nodePort: 30101
     - name: web-client-https
       protocol: TCP
