@@ -2,6 +2,7 @@ using BrowserChat.Security.Core.Application;
 using BrowserChat.Security.Core.Data;
 using BrowserChat.Security.Core.Entities;
 using BrowserChat.Security.Core.JWTLogic;
+using BrowserChat.Security.Core.Profiles;
 using BrowserChat.Security.Core.Util;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Net.NetworkInformation;
 
 var builder = WebApplication.CreateBuilder(args);
 bool isProduction = builder.Environment.IsProduction();
@@ -58,8 +60,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddSingleton<IJWTGenerator, JWTGenerator>();
 /**************/
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddMediatR(typeof(Login.UsuarioLoginCommand).Assembly);
+builder.Services.AddAutoMapper(config => config.AddProfile<MappingProfile>());
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 
 var app = builder.Build();
 
