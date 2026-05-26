@@ -15,6 +15,7 @@ spec:
       containers:
         - name: backend-service
           image: nextordevs/browserchat-backend:net10
+          imagePullPolicy: Always
 ---
 apiVersion: v1
 kind: Service

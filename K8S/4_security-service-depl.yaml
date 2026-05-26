@@ -15,6 +15,7 @@ spec:
       containers:
         - name: security-service
           image: nextordevs/browserchat-security:net10
+          imagePullPolicy: Always
 ---
 apiVersion: v1
 kind: Service
