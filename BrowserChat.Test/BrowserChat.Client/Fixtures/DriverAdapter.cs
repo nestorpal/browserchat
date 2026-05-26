@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using WebDriverManager;
@@ -21,6 +22,10 @@ namespace BrowserChat.Test.BrowserChat.Client.Fixtures
                 case BrowserType.Chrome:
                     new DriverManager().SetUpDriver(new ChromeConfig(), VersionResolveStrategy.MatchingBrowser);
                     _driver = new ChromeDriver();
+                    break;
+                case BrowserType.Edge:
+                    new DriverManager().SetUpDriver(new EdgeConfig(), VersionResolveStrategy.MatchingBrowser);
+                    _driver = new EdgeDriver();
                     break;
             }
 

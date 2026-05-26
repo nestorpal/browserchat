@@ -1,9 +1,9 @@
 using BrowserChat.Backend.Core.AsyncServices;
 using BrowserChat.Backend.Core.Data;
 using BrowserChat.Backend.Core.HubConfig;
+using BrowserChat.Backend.Core.Profiles;
 using BrowserChat.Backend.Core.Util;
 using MassTransit;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -74,9 +74,8 @@ builder.Services.AddMassTransit(x =>
 builder.Services.AddSingleton(typeof(BotRequestPublisher));
 /**************/
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-builder.Services.AddMediatR(typeof(BrowserChat.Backend.Core.Application.PostPublish.PostPublishRequest).Assembly);
+builder.Services.AddAutoMapper(config => config.AddProfile<MappingProfile>());
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
 builder.Services.AddCors(opt =>
 {

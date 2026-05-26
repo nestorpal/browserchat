@@ -1,0 +1,18 @@
+<Project>
+	<PropertyGroup>
+		<Deterministic>true</Deterministic>
+		<NuGet-AutoMapper>16.1.1</NuGet-AutoMapper>
+		<NuGet-MediatR>12.1.1</NuGet-MediatR>
+		<NuGet-MassTransit>8.0.3</NuGet-MassTransit>
+		<NuGet-MassTransit-AspNetCore>7.3.1</NuGet-MassTransit-AspNetCore>
+		<NuGet-MassTransit-RabbitMQ>8.0.3</NuGet-MassTransit-RabbitMQ>
+		<NuGet-Microsoft-AspNetCore-Identity-EntityFrameworkCore>6.0.6</NuGet-Microsoft-AspNetCore-Identity-EntityFrameworkCore>
+		<NuGet-Microsoft-AspNetCore-Authentication-JwtBearer>10.0.8</NuGet-Microsoft-AspNetCore-Authentication-JwtBearer>
+		<NuGet-Microsoft-Data-SqlClient>7.0.0</NuGet-Microsoft-Data-SqlClient>
+		<NuGet-Microsoft-EntityFrameworkCore>10.0.0</NuGet-Microsoft-EntityFrameworkCore>
+		<NuGet-Microsoft-EntityFrameworkCore-Design>10.0.0</NuGet-Microsoft-EntityFrameworkCore-Design>
+		<NuGet-Microsoft-EntityFrameworkCore-InMemory>10.0.0</NuGet-Microsoft-EntityFrameworkCore-InMemory>
+		<NuGet-Microsoft-EntityFrameworkCore-SqlServer>10.0.0</NuGet-Microsoft-EntityFrameworkCore-SqlServer>
+		<NuGet-Swashbuckle-AspNetCore>10.0.0</NuGet-Swashbuckle-AspNetCore>
+	</PropertyGroup>
+</Project>

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-BrowserChat.Bot-AEE53F3D-8B88-4DB3-B5F9-391A2CF5F9B9</UserSecretsId>
@@ -9,8 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="28.0.0" />
-    <PackageReference Include="MassTransit" Version="8.0.3" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.3" />
+    <PackageReference Include="MassTransit" Version="$(NuGet-MassTransit)" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="$(NuGet-MassTransit-RabbitMQ)" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
   </ItemGroup>

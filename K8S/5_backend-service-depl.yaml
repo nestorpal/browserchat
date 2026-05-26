@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
         - name: backend-service
-          image: nextordevs/browserchat-backend
+          image: nextordevs/browserchat-backend:net10
+          imagePullPolicy: Always
 ---
 apiVersion: v1
 kind: Service
@@ -27,8 +28,8 @@ spec:
   ports:
     - name: backend-service-http
       protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 8080
+      targetPort: 8080
     - name: backend-service-https
       protocol: TCP
       port: 443
@@ -45,8 +46,8 @@ spec:
   ports:
     - name: backend-service-http
       protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 8080
+      targetPort: 8080
       nodePort: 30102
     - name: backend-service-https
       protocol: TCP

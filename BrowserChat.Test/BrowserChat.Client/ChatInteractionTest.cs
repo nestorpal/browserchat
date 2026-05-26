@@ -5,10 +5,10 @@ using OpenQA.Selenium;
 
 namespace BrowserChat.Test.BrowserChat.Client
 {
-    public class ChatInteractionTestChrome : IClassFixture<ChromeDriverFixture>
+    public class ChatInteractionTest : IClassFixture<EdgeDriverFixture>
     {
-        private readonly ChromeDriverFixture _fixture;
-        private readonly string ClientUrl = "http://localhost:5012";
+        private readonly DriverFixture _fixture;
+        private readonly string ClientUrl = "http://localhost:30101";
         private readonly static string EncryptionKey = "ce2ea23eb15a1914133b6a5898a4b14c";
         private readonly string DefaultRoom = EncryptRoomId("1");
         private readonly string TestPost = $"This is a test post {DateTime.Now.ToString("ssfff")}";
@@ -17,7 +17,7 @@ namespace BrowserChat.Test.BrowserChat.Client
         private readonly string InvalidTestCommand = "/xxx=yyyy";
         private readonly string InvalidTestCommandResult = Constant.MessagesAndExceptions.Bot.Other.InvalidCommand;
 
-        public ChatInteractionTestChrome(ChromeDriverFixture fixture)
+        public ChatInteractionTest(EdgeDriverFixture fixture)
         {
             _fixture = fixture;
         }
@@ -93,7 +93,7 @@ namespace BrowserChat.Test.BrowserChat.Client
 
         private void AsserPostIsReceived(string roomId, string expectedResponse)
         {
-            System.Threading.Thread.Sleep(1500);
+            System.Threading.Thread.Sleep(2500);
 
             var postSpan =
                 _fixture.Driver

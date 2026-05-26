@@ -1,26 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>f58e1fce-c3cd-410e-9a50-b1f58793b2c5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.6" />
+    <PackageReference Include="AutoMapper" Version="$(NuGet-AutoMapper)" />
+    <PackageReference Include="MediatR" Version="$(NuGet-MediatR)" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(NuGet-Microsoft-AspNetCore-Authentication-JwtBearer)" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.6">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(NuGet-Microsoft-EntityFrameworkCore)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(NuGet-Microsoft-EntityFrameworkCore-Design)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(NuGet-Microsoft-EntityFrameworkCore-InMemory)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(NuGet-Microsoft-EntityFrameworkCore-SqlServer)" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="$(NuGet-Swashbuckle-AspNetCore)" />
   </ItemGroup>
 
   <ItemGroup>
