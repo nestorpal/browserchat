@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: web-client
-          image: nextordevs/browserchat-client
+          image: nextordevs/browserchat-client:net10
 ---
 apiVersion: v1
 kind: Service
