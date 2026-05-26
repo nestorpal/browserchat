@@ -47,4 +47,11 @@ After the required software is implemented go to the Install directory and run t
 
 > **warning**: the installation process is based on timeouts which varies for each component so it is recommended to have a proper Internet access for the deployment to download the docker images on time.
 
-Once the installation process finishes, you can access the Browser Chat following this address: http://localhost:30101/
+Once the installation process finishes, you need to run the following commands to forward the traffic from your localhost 30101 (frontend) and 30102 (backend) ports to the Kubernetes internal pods (run each in a separate terminal):
+
+```powershell
+kubectl port-forward svc/web-client-nodeport 30101:8080
+kubectl port-forward svc/backend-service-nodeport 30102:8080
+```
+
+Finally, you can access the Browser Chat following this address: http://localhost:30101/
